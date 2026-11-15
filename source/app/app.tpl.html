@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ভাড়া কত?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wdth,wght@75..125,400..700&family=Baloo+Da+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one narrow column like a ticket counter. A flag-green route board on top
+   (the red disc is the swap button), paper tickets below, and the printed stair-step chart for each route. */
+:root{
+  --paper:#edf1ea; --card:#ffffff; --ink:#13241d; --muted:#586a61; --line:#cdd8cf;
+  --green:#006a4e; --green-ink:#00553f; --green-soft:#dcebe2; --red:#d81f3c; --sun:#f0b400; --sun-ink:#4a3600;
+  --board:#006a4e; --board-ink:#ffffff; --board-field:#00553f; --board-line:#2f8a70;
+  --font-display:'Baloo Da 2','Anek Bangla','Noto Sans Bengali','Hind Siliguri','Nirmala UI','Vrinda',sans-serif;
+  --font-body:'Anek Bangla','Noto Sans Bengali','Hind Siliguri','Nirmala UI','Vrinda',sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0c1411; --card:#15211c; --ink:#e7efe9; --muted:#9bb0a5; --line:#2a3c33;
+    --green:#45d3a0; --green-ink:#7be3bd; --green-soft:#17332a; --red:#ff5d73; --sun:#ffcf4a; --sun-ink:#2b2000;
+    --board:#0a5a43; --board-ink:#f3fbf7; --board-field:#07412f; --board-line:#2b7f67;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0c1411; --card:#15211c; --ink:#e7efe9; --muted:#9bb0a5; --line:#2a3c33;
+  --green:#45d3a0; --green-ink:#7be3bd; --green-soft:#17332a; --red:#ff5d73; --sun:#ffcf4a; --sun-ink:#2b2000;
+  --board:#0a5a43; --board-ink:#f3fbf7; --board-field:#07412f; --board-line:#2b7f67;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.5;
+  font-variant-numeric:tabular-nums}
+button,input,select{font:inherit;color:inherit}
+a{color:var(--green-ink)}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:6px}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 56px}
+
+/* masthead */
+.mast{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:22px 0 14px}
+.brand{display:flex;flex-direction:column;gap:0;text-decoration:none;color:var(--ink)}
+.brand b{font-family:var(--font-display);font-weight:800;font-size:44px;line-height:1.05;letter-spacing:-.5px}
+.brand b i{font-style:normal;color:var(--red)}
+.brand span{color:var(--muted);font-size:15px}
+.tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px}
+.tabs a{padding:7px 16px;border-radius:999px;text-decoration:none;color:var(--muted);font-weight:600;font-size:15px;white-space:nowrap}
+.tabs a[aria-current="page"]{background:var(--green-soft);color:var(--green-ink)}
+
+/* route board */
+.board{background:var(--board);color:var(--board-ink);border-radius:20px;padding:18px;display:grid;gap:14px;
+  box-shadow:0 10px 24px -14px rgba(0,60,40,.55)}
+.fields{display:grid;grid-template-columns:1fr;gap:10px;position:relative}
+.field{position:relative}
+.field label{display:block;font-size:13.5px;font-weight:600;letter-spacing:.2px;opacity:.85;margin:0 0 4px 4px}
+.field input{width:100%;background:var(--board-field);border:1.5px solid var(--board-line);color:var(--board-ink);
+  border-radius:12px;padding:12px 44px 12px 14px;font-family:var(--font-display);font-weight:600;font-size:22px;line-height:1.25}
+.field input::placeholder{color:var(--board-ink);opacity:.5;font-weight:600}
+.field input:focus{outline:3px solid var(--sun);outline-offset:1px}
+.clear{position:absolute;right:6px;bottom:7px;width:36px;height:36px;border:0;border-radius:50%;background:transparent;
+  color:var(--board-ink);opacity:.7;cursor:pointer;display:grid;place-items:center}
+.clear:hover{opacity:1;background:rgba(255,255,255,.12)}
+.swap{position:absolute;right:16px;top:50%;transform:translateY(-22%);width:46px;height:46px;border-radius:50%;border:3px solid var(--board);
+  background:var(--red);color:#fff;cursor:pointer;display:grid;place-items:center;z-index:2;transition:transform .2s}
+.swap:hover{transform:translateY(-22%) rotate(180deg)}
+.list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:20;background:var(--card);color:var(--ink);
+  border:1px solid var(--line);border-radius:12px;max-height:300px;overflow:auto;box-shadow:0 18px 40px -18px rgba(0,0,0,.5);padding:6px}
+.list[hidden]{display:none}
+.opt{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer}
+.opt b{font-weight:600}
+.opt small{color:var(--muted);font-size:13px;white-space:nowrap}
+.opt em{font-style:normal;color:var(--muted);font-size:13px;margin-left:6px}
+.opt[aria-selected="true"],.opt:hover{background:var(--green-soft)}
+.none{padding:10px;color:var(--muted)}
+.who{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.who>span{font-size:14px;opacity:.85}
+.seg{display:inline-flex;background:var(--board-field);border:1.5px solid var(--board-line);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;color:var(--board-ink);padding:6px 14px;border-radius:999px;cursor:pointer;font-weight:600;font-size:15px;opacity:.8}
+.seg button[aria-pressed="true"]{background:var(--sun);color:var(--sun-ink);opacity:1}
+.seg.plain{background:var(--card);border-color:var(--line)}
+.seg.plain button{color:var(--ink)}
+.seg.plain button[aria-pressed="true"]{color:var(--sun-ink)}
+
+/* results */
+h2{font-family:var(--font-display);font-weight:800;font-size:26px;line-height:1.2;margin:26px 0 2px;text-wrap:balance}
+.sub{color:var(--muted);margin:0 0 14px;font-size:15.5px}
+.stack{display:grid;gap:12px}
+.ticket{background:var(--card);border:1px solid var(--line);border-radius:var(--r);display:grid;grid-template-columns:1fr auto;position:relative;overflow:hidden}
+.ticket .main{padding:14px 16px;min-width:0;display:grid;gap:6px}
+.ticket .price{padding:14px 16px;border-left:2px dashed var(--line);display:flex;flex-direction:column;justify-content:center;align-items:flex-end;width:150px;position:relative}
+.ticket .price::before,.ticket .price::after{content:"";position:absolute;left:-9px;width:16px;height:16px;border-radius:50%;background:var(--paper);border:1px solid var(--line)}
+.ticket .price::before{top:-9px}.ticket .price::after{bottom:-9px}
+.rno{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--green-ink);
+  background:var(--green-soft);padding:1px 10px;border-radius:6px;white-space:nowrap}
+.rname{font-weight:600;overflow-wrap:anywhere}
+.head{display:flex;gap:8px 10px;align-items:center;flex-wrap:wrap}
+.meta{color:var(--muted);font-size:15px}
+.amt{font-family:var(--font-display);font-weight:800;font-size:38px;line-height:1;color:var(--ink);white-space:nowrap}
+.amt small{font-size:15px;font-weight:600;margin-left:3px;color:var(--muted);font-family:var(--font-body)}
+.tag{background:var(--sun);color:var(--sun-ink);font-size:12.5px;font-weight:700;padding:1px 8px;border-radius:999px;margin-bottom:6px}
+.full{color:var(--muted);font-size:13.5px;margin-top:3px;text-align:right;white-space:nowrap}
+.cap{color:var(--muted);font-size:12.5px;font-weight:600;margin-bottom:2px}
+.orig{color:var(--ink);font-size:13.5px;font-weight:600;margin-top:5px;text-align:right;white-space:nowrap}
+.minline{font-size:14px;opacity:.9;display:flex;align-items:center;gap:8px}
+.minline::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sun);flex:none}
+.best .price{background:var(--green-soft)}
+.bestmark{color:var(--red);font-weight:700;font-size:13px}
+details.way{font-size:15px}
+details.way summary{cursor:pointer;color:var(--green-ink);font-weight:600;width:fit-content}
+.path{list-style:none;margin:8px 0 2px;padding:0 0 0 4px;display:grid;gap:0}
+.path li{display:grid;grid-template-columns:18px 1fr auto;gap:8px;align-items:center;padding:3px 0;position:relative}
+.path li::before{content:"";width:9px;height:9px;border-radius:50%;border:2px solid var(--green);background:var(--card);justify-self:center;z-index:1}
+.path li::after{content:"";position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--line)}
+.path li:first-child::after{top:50%}.path li:last-child::after{bottom:50%}
+.path li.end::before{background:var(--green)}
+.path li span:last-child{color:var(--muted);font-size:14px}
+.leg{display:grid;gap:3px;padding:2px 0}
+.change{display:flex;align-items:center;gap:8px;color:var(--red);font-weight:700;font-size:14.5px;margin:4px 0}
+.change::before,.change::after{content:"";height:1px;background:var(--line);flex:1}
+.note{background:var(--card);border:1px dashed var(--line);border-radius:var(--r);padding:14px 16px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px;cursor:pointer;font-weight:600;font-size:15px}
+.chip:hover{border-color:var(--green);color:var(--green-ink)}
+.more{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 16px;cursor:pointer;font-weight:600;color:var(--green-ink);justify-self:start}
+
+/* route list + detail */
+.filter{width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-size:18px}
+.rlist{display:grid;gap:8px;margin-top:14px}
+.rrow{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:10px 14px;text-decoration:none;color:var(--ink)}
+.rrow:hover{border-color:var(--green)}
+.rrow .km{color:var(--muted);font-size:14px;white-space:nowrap;text-align:right}
+.back{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:600;margin-top:18px}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:12px;margin:14px 0}
+.calc .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.calc label{display:block;font-size:13.5px;color:var(--muted);font-weight:600;margin-bottom:3px}
+.calc select{width:100%;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:9px 10px;font-size:17px}
+.calc .out{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.tools{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:22px 0 8px}
+.tools h3{font-family:var(--font-display);font-weight:800;font-size:21px;margin:0}
+.chart{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+table{border-collapse:separate;border-spacing:0;font-size:14.5px;min-width:100%}
+th,td{padding:6px 9px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);white-space:nowrap;text-align:right}
+tr:last-child>*{border-bottom:0}
+th.stop{position:sticky;left:0;background:var(--card);text-align:left;font-weight:600;z-index:1;max-width:44vw;overflow:hidden;text-overflow:ellipsis}
+td.km{color:var(--muted)}
+td.diag{text-align:left;font-weight:700;color:var(--green-ink);background:var(--green-soft);border-right:0}
+td.blank{border:0;background:transparent}
+thead th{font-size:12.5px;color:var(--muted);font-weight:600;background:var(--card)}
+td.f{cursor:default}
+td.f s{color:var(--muted);font-size:13px;margin-right:6px;text-decoration-thickness:1px}
+.foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:14px;display:grid;gap:6px}
+.foot p{margin:0;max-width:65ch}
+[hidden]{display:none!important}
+@media (min-width:620px){
+  .fields{grid-template-columns:1fr 1fr;gap:34px}
+  .swap{right:auto;left:50%;top:auto;bottom:4px;transform:translateX(-50%)}
+  .swap:hover{transform:translateX(-50%) rotate(180deg)}
+}
+@media (max-width:420px){
+  body{font-size:16px}
+  .brand b{font-size:38px}
+  .ticket .price{width:136px;padding:12px}
+  .amt{font-size:32px}
+  .field input{font-size:20px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .stack>*{animation:in .28s ease both}
+  @keyframes in{from{transform:translateY(6px);opacity:.4}to{transform:none;opacity:1}}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <a class="brand" href="#khoj" id="brand"><b>ভাড়া কত<i>?</i></b><span>ঢাকার বাসের সরকারি ভাড়ার চার্ট থেকে সঠিক ভাড়া</span></a>
+    <nav class="tabs" aria-label="পাতা">
+      <a href="#khoj" id="tab-khoj">ভাড়া খুঁজুন</a>
+      <a href="#routes" id="tab-routes">সব রুট</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="view-khoj">
+      <form class="board" id="board" autocomplete="off">
+        <div class="fields">
+          <div class="field">
+            <label for="from">কোথা থেকে উঠবেন</label>
+            <input id="from" type="text" inputmode="text" placeholder="স্টপেজের নাম লিখুন" role="combobox" aria-expanded="false" aria-controls="from-list" aria-autocomplete="list">
+            <button type="button" class="clear" id="from-clear" aria-label="মুছুন" hidden><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+            <div class="list" id="from-list" role="listbox" hidden></div>
+          </div>
+          <button type="button" class="swap" id="swap" aria-label="দুই স্টপেজ অদলবদল করুন" title="অদলবদল">
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v15m0 0l-4-4m4 4l4-4M17 20V5m0 0l-4 4m4-4l4 4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="field">
+            <label for="to">কোথায় নামবেন</label>
+            <input id="to" type="text" inputmode="text" placeholder="স্টপেজের নাম লিখুন" role="combobox" aria-expanded="false" aria-controls="to-list" aria-autocomplete="list">
+            <button type="button" class="clear" id="to-clear" aria-label="মুছুন" hidden><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+            <div class="list" id="to-list" role="listbox" hidden></div>
+          </div>
+        </div>
+        <div class="who">
+          <span id="who-label">যাত্রী</span>
+          <div class="seg" role="group" aria-labelledby="who-label">
+            <button type="button" id="who-all" aria-pressed="true">সাধারণ</button>
+            <button type="button" id="who-student" aria-pressed="false">শিক্ষার্থী (অর্ধেক ভাড়া)</button>
+          </div>
+        </div>
+        <div class="minline">সর্বনিম্ন ভাড়া ১০ টাকা। সাধারণ ও শিক্ষার্থী, সবার জন্য একই।</div>
+      </form>
+      <div id="results"></div>
+    </section>
+
+    <section id="view-routes" hidden>
+      <h2>সব রুট</h2>
+      <p class="sub" id="routes-sub"></p>
+      <label for="rfilter" class="sub" style="display:block;margin-bottom:6px">রুট নম্বর বা স্টপেজের নাম দিয়ে খুঁজুন</label>
+      <input class="filter" id="rfilter" type="text" placeholder="যেমন: ২৯৫ বা ফার্মগেট">
+      <div class="rlist" id="rlist"></div>
+    </section>
+
+    <section id="view-route" hidden></section>
+  </main>
+
+  <footer class="foot">
+    <p><b>তথ্যের উৎস:</b> ঢাকা মেট্রো যাত্রী ও পণ্য পরিবহন কমিটির ডিজেলচালিত বাস ভাড়ার চার্ট (প্রজ্ঞাপন: ০৭ আশ্বিন ১৪৩৩ / ২২ সেপ্টেম্বর ২০২৬)। ভাড়ার হার প্রতি কিলোমিটার ২.৭০ টাকা।</p>
+    <p><b>সর্বনিম্ন ভাড়া ১০ টাকা।</b> কিলোমিটার হিসাবে ভাড়া ১০ টাকার কম হলেও ১০ টাকা দিতে হবে। শিক্ষার্থীর ভাড়া চার্টের ভাড়ার অর্ধেক, তবে অর্ধেক ১০ টাকার কম হলে শিক্ষার্থীকেও ১০ টাকা দিতে হবে। যেমন পুরো ভাড়া ১৫ টাকা হলে শিক্ষার্থী দেবেন ১০ টাকা।</p>
+    <p>প্রতিটি ভাড়া ছাপানো চার্টের ঘর থেকে নেওয়া। যেখানে আসল ভাড়া ১০ টাকার কম, সেখানে আসল ভাড়া ও দিতে হবে এমন ভাড়া দুটোই দেখানো হয়েছে। চার্ট অনুযায়ী এই ভাড়ার সাথে বাড়তি কোনো টাকা দাবি করা যাবে না।</p>
+    <p id="foot-count"></p>
+  </footer>
+</div>
+
+<script>
+const D = /*__DATA__*/;
+(function(){
+'use strict';
+const S = D.stops, R = D.routes;
+const BN = '০১২৩৪৫৬৭৮৯';
+const bn = x => String(x).replace(/\d/g, d => BN[d]);
+const asc = x => String(x).replace(/[০-৯]/g, d => BN.indexOf(d));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $ = id => document.getElementById(id);
+const kmNum = v => Math.round(v * 100) / 100;
+const kmTxt = v => bn(kmNum(v).toFixed(2).replace(/0$/, '').replace(/\.0$/, ''));
+
+// index: stop -> [{r, p}]
+const through = S.map(() => []);
+R.forEach((r, ri) => { r.kmn = r.km.map(Number); r.s.forEach((s, p) => through[s].push({r: ri, p})); r.hash = 'r-' + asc(r.no).replace(/[^0-9]/g, ''); });
+const byHash = {}; R.forEach((r, i) => byHash[r.hash] = i);
+
+function fare(r, i, j){ const a = Math.min(i, j), b = Math.max(i, j); return r.f[b][a]; }
+function dist(r, i, j){ return Math.abs(r.kmn[i] - r.kmn[j]); }
+const MIN = 10;
+const fmt = x => bn(Number.isInteger(x) ? x : x.toFixed(2));
+// fare by distance alone (2.70 per km, rounded), before the minimum
+function calcFare(r, i, j){ const d100 = Math.round(dist(r, i, j) * 100); return Math.floor((d100 * 27 + 500) / 1000); }
+// what one passenger pays for one bus: orig = fare before the 10 Tk minimum, pay = fare after it
+function quote(r, i, j, student){
+  const chart = fare(r, i, j);
+  if(student){ const half = chart / 2; return {orig: half, pay: Math.max(MIN, half)}; }
+  let orig = chart;
+  if(chart <= MIN){ const c = calcFare(r, i, j); if(c < MIN) orig = Math.min(chart, c); }
+  return {orig, pay: Math.max(MIN, chart)};
+}
+const add = (a, b) => ({orig: a.orig + b.orig, pay: a.pay + b.pay});
+function direct(a, b){
+  const out = [];
+  for(const x of through[a]){
+    const r = R[x.r]; const q = r.s.indexOf(b);
+    if(q >= 0) out.push({r: x.r, i: x.p, j: q, fare: fare(r, x.p, q), km: dist(r, x.p, q), g: quote(r, x.p, q, false), s: quote(r, x.p, q, true)});
+  }
+  return out.sort((u, v) => u.fare - v.fare || u.km - v.km);
+}
+function oneChange(a, b){
+  const best = new Map();
+  for(const x of through[a]){
+    const r1 = R[x.r]; if(r1.s.includes(b)) continue;
+    for(let p = 0; p < r1.s.length; p++){
+      if(p === x.p) continue;
+      const mid = r1.s[p];
+      for(const y of through[mid]){
+        if(y.r === x.r) continue;
+        const r2 = R[y.r]; if(r2.s.includes(a)) continue;
+        const q = r2.s.indexOf(b); if(q < 0) continue;
+        const g = add(quote(r1, x.p, p, false), quote(r2, y.p, q, false)), s = add(quote(r1, x.p, p, true), quote(r2, y.p, q, true));
+        const t = {r1: x.r, i1: x.p, j1: p, r2: y.r, i2: y.p, j2: q, mid, g, s, fare: g.pay,
+                   km: dist(r1, x.p, p) + dist(r2, y.p, q)};
+        const key = x.r + '_' + y.r, old = best.get(key);
+        if(!old || t.fare < old.fare || (t.fare === old.fare && t.km < old.km)) best.set(key, t);
+      }
+    }
+  }
+  return [...best.values()].sort((u, v) => u.fare - v.fare || u.km - v.km);
+}
+// exposed for checks
+window.__fare = {direct, oneChange, fare, quote, S, R};
+
+// ---------- search text ----------
+function norm(s){
+  return s.normalize('NFC').toLowerCase().replace(/[0-9]/g, d => BN[d])
+    .replace(/[\s\-–—().,\/:ঃ়ঁ]/g, '').replace(/ী/g, 'ি').replace(/ূ/g, 'ু').replace(/ণ/g, 'ন').replace(/য/g, 'য');
+}
+const stopIdx = S.map((name, id) => ({id, name, n: norm(name), al: D.alias[id].map(a => ({a, n: norm(a)})), routes: through[id].length}));
+const popular = [...stopIdx].sort((a, b) => b.routes - a.routes || a.name.localeCompare(b.name, 'bn'));
+function findStops(q){
+  const n = norm(q); if(!n) return popular.map(s => ({s}));
+  const res = [];
+  for(const s of stopIdx){
+    let rank = -1, via = '';
+    if(s.n === n) rank = 0; else if(s.n.startsWith(n)) rank = 1; else if(s.n.includes(n)) rank = 3;
+    for(const a of s.al){
+      const k = a.n === n ? 0.5 : a.n.startsWith(n) ? 2 : a.n.includes(n) ? 4 : -1;
+      if(k >= 0 && (rank < 0 || k < rank)){ rank = k; via = a.a; }
+    }
+    if(rank >= 0) res.push({s, rank, via});
+  }
+  return res.sort((a, b) => a.rank - b.rank || b.s.routes - a.s.routes || a.s.name.localeCompare(b.s.name, 'bn'));
+}
+
+// ---------- state ----------
+const state = {from: null, to: null, student: false, example: false, showChange: false};
+function save(){ try{ localStorage.setItem('vara-koto', JSON.stringify({f: state.from, t: state.to, s: state.student})); }catch(e){} }
+function load(){
+  let v = null; try{ v = JSON.parse(localStorage.getItem('vara-koto') || 'null'); }catch(e){}
+  const hot = window.claude && window.claude.hot && window.claude.hot.data; if(hot && 'f' in hot) v = hot;
+  const ok = x => Number.isInteger(x) && x >= 0 && x < S.length;
+  if(v && (ok(v.f) || ok(v.t))){ state.from = ok(v.f) ? v.f : null; state.to = ok(v.t) ? v.t : null; state.student = !!v.s; }
+  else{ state.from = S.indexOf('ফার্মগেট'); state.to = S.indexOf('গুলিস্তান'); state.example = true; if(v) state.student = !!v.s; }
+}
+try{ window.claude && window.claude.hot && window.claude.hot.snapshot && window.claude.hot.snapshot(() => ({f: state.from, t: state.to, s: state.student})); }catch(e){}
+
+// ---------- combobox ----------
+function combo(key){
+  const input = $(key), list = $(key + '-list'), clear = $(key + '-clear');
+  let items = [], active = -1;
+  function paint(){
+    if(!items.length){ list.innerHTML = '<div class="none">এই নামে কোনো স্টপেজ চার্টে নেই। বানান বদলে দেখুন।</div>'; return; }
+    list.innerHTML = items.slice(0, 80).map((it, k) =>
+      `<div class="opt" role="option" id="${key}-o${k}" data-id="${it.s.id}" aria-selected="${k === active}"><span><b>${esc(it.s.name)}</b>${it.via ? `<em>${esc(it.via)}</em>` : ''}</span><small>${bn(it.s.routes)}টি রুট</small></div>`).join('');
+  }
+  function open(){ items = findStops(state[key] != null && input.value === S[state[key]] ? '' : input.value); active = -1; paint(); list.hidden = false; input.setAttribute('aria-expanded', 'true'); }
+  function close(){ list.hidden = true; input.setAttribute('aria-expanded', 'false'); }
+  function pick(id){ state[key] = id; state.example = false; state.showChange = false; input.value = S[id]; clear.hidden = false; close(); save(); render(); }
+  input.addEventListener('focus', () => { input.select(); open(); });
+  input.addEventListener('input', () => { clear.hidden = !input.value; items = findStops(input.value); active = items.length && input.value ? 0 : -1; paint(); list.hidden = false; });
+  input.addEventListener('keydown', e => {
+    if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
+      e.preventDefault(); if(list.hidden) open();
+      const n = Math.min(items.length, 80); if(!n) return;
+      active = (active + (e.key === 'ArrowDown' ? 1 : -1) + n) % n; paint();
+      const el = $(key + '-o' + active); if(el) el.scrollIntoView({block: 'nearest'});
+    }else if(e.key === 'Enter'){
+      e.preventDefault(); const it = items[active >= 0 ? active : 0]; if(!list.hidden && it) pick(it.s.id);
+    }else if(e.key === 'Escape'){ close(); }
+  });
+  input.addEventListener('blur', () => setTimeout(() => {
+    close();
+    if(!input.value.trim()){ if(state[key] != null){ state[key] = null; state.example = false; save(); render(); } clear.hidden = true; return; }
+    const exact = findStops(input.value)[0];
+    if(exact && exact.rank <= 0.5 && exact.s.id !== state[key]) pick(exact.s.id);
+    else if(state[key] != null) input.value = S[state[key]];
+  }, 120));
+  list.addEventListener('mousedown', e => e.preventDefault());
+  list.addEventListener('click', e => { const o = e.target.closest('.opt'); if(o) pick(+o.dataset.id); });
+  clear.addEventListener('click', () => { input.value = ''; state[key] = null; state.example = false; clear.hidden = true; save(); render(); input.focus(); });
+  return {set(){ input.value = state[key] != null ? S[state[key]] : ''; clear.hidden = !input.value; }};
+}
+const cFrom = combo('from'), cTo = combo('to');
+$('board').addEventListener('submit', e => e.preventDefault());
+$('swap').addEventListener('click', () => { const t = state.from; state.from = state.to; state.to = t; state.example = false; cFrom.set(); cTo.set(); save(); render(); });
+function setStudent(v){ state.student = v; save(); syncWho(); render(); renderRoute(); }
+function syncWho(){
+  document.querySelectorAll('[data-who]').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.who === 'student') === state.student)));
+  $('who-all').setAttribute('aria-pressed', String(!state.student)); $('who-student').setAttribute('aria-pressed', String(state.student));
+}
+$('who-all').addEventListener('click', () => setStudent(false));
+$('who-student').addEventListener('click', () => setStudent(true));
+
+// ---------- rendering ----------
+const rname = r => `${esc(r.frm)} ⇄ ${esc(r.to)}`;
+const cur = x => state.student ? x.s : x.g;
+function priceBox(g, s){
+  const q = state.student ? s : g, cut = q.orig < q.pay;
+  return (state.student ? '<span class="tag">শিক্ষার্থী</span>' : '') +
+    `<span class="cap">দিতে হবে</span><span class="amt">${fmt(q.pay)}<small>টাকা</small></span>` +
+    (cut ? `<span class="orig">আসল ভাড়া ${fmt(q.orig)} টাকা</span><span class="full">সর্বনিম্ন ${bn(MIN)} টাকা</span>` : '') +
+    (state.student ? `<span class="full">পুরো ভাড়া ${fmt(g.pay)} টাকা</span>` : `<span class="full">শিক্ষার্থী ${fmt(s.pay)} টাকা</span>`);
+}
+function pathList(r, i, j){
+  const step = i < j ? 1 : -1, li = [];
+  for(let p = i; p !== j + step; p += step){
+    const end = p === i || p === j;
+    li.push(`<li class="${end ? 'end' : ''}"><span>${esc(S[r.s[p]])}</span><span>${p === i ? 'ওঠা' : kmTxt(dist(r, i, p)) + ' কিমি'}</span></li>`);
+  }
+  return `<ol class="path">${li.join('')}</ol>`;
+}
+function legHtml(r, i, j, showFare){
+  const between = Math.abs(i - j) - 1, q = quote(r, i, j, state.student);
+  const f = showFare ? ` · ${fmt(q.pay)} টাকা${q.orig < q.pay ? ' (আসল ' + fmt(q.orig) + ')' : ''}` : '';
+  return `<div class="leg"><div class="head"><span class="rno">${esc(r.no)}</span><span class="rname">${rname(r)}</span></div>
+    <div class="meta">${esc(S[r.s[i]])} থেকে ${esc(S[r.s[j]])} · ${kmTxt(dist(r, i, j))} কিমি · ${between > 0 ? 'মাঝে ' + bn(between) + 'টি স্টপেজ' : 'পরের স্টপেজ'}${f}</div>
+    <details class="way"><summary>পথের স্টপেজ</summary>${pathList(r, i, j)}<a href="#${r.hash}">${esc(r.no)} রুটের পুরো চার্ট</a></details></div>`;
+}
+function directCard(d, best){
+  const r = R[d.r];
+  return `<article class="ticket${best ? ' best' : ''}"><div class="main">${legHtml(r, d.i, d.j, false)}</div><div class="price">${best ? '<span class="bestmark">সবচেয়ে কম</span>' : ''}${priceBox(d.g, d.s)}</div></article>`;
+}
+function changeCard(t){
+  return `<article class="ticket"><div class="main">${legHtml(R[t.r1], t.i1, t.j1, true)}<div class="change">${esc(S[t.mid])}-এ বাস বদল</div>${legHtml(R[t.r2], t.i2, t.j2, true)}</div>
+    <div class="price">${priceBox(t.g, t.s)}</div></article>`;
+}
+function render(){
+  const el = $('results'), a = state.from, b = state.to;
+  if(a == null && b == null){
+    el.innerHTML = `<h2>কোথা থেকে কোথায় যাবেন?</h2><p class="sub">উপরে দুটি স্টপেজ বেছে নিন। জনপ্রিয় কয়েকটি স্টপেজ:</p>
+      <div class="chips">${popular.slice(0, 14).map(s => `<button class="chip" data-stop="${s.id}">${esc(s.name)}</button>`).join('')}</div>`;
+    return;
+  }
+  if(a == null || b == null){
+    const s = a != null ? a : b, list = through[s];
+    el.innerHTML = `<h2>${esc(S[s])} দিয়ে যায় ${bn(list.length)}টি রুট</h2><p class="sub">${a != null ? 'কোথায় নামবেন তা বেছে নিলে ভাড়া দেখাবে।' : 'কোথা থেকে উঠবেন তা বেছে নিলে ভাড়া দেখাবে।'}</p>
+      <div class="rlist">${list.map(x => routeRow(R[x.r])).join('')}</div>`;
+    return;
+  }
+  if(a === b){ el.innerHTML = `<div class="note" style="margin-top:22px">ওঠা ও নামার স্টপেজ একই। দুটি আলাদা স্টপেজ বেছে নিন।</div>`; return; }
+  const byPay = (u, v) => cur(u).pay - cur(v).pay || u.fare - v.fare || u.km - v.km;
+  const ds = direct(a, b).sort(byPay);
+  const minNote = list => list.some(x => cur(x).orig < cur(x).pay) ? ` আসল ভাড়া ${bn(MIN)} টাকার কম হলেও সর্বনিম্ন ${bn(MIN)} টাকা দিতে হবে।` : '';
+  const title = `${esc(S[a])} থেকে ${esc(S[b])}`;
+  let html = '';
+  if(ds.length){
+    const lo = cur(ds[0]).pay, hi = cur(ds[ds.length - 1]).pay;
+    html += `<h2>${title}</h2><p class="sub">${state.example ? 'উদাহরণ · ' : ''}সরাসরি ${bn(ds.length)}টি রুট · দিতে হবে ${fmt(lo)}${hi !== lo ? ' থেকে ' + fmt(hi) : ''} টাকা${state.student ? ' (শিক্ষার্থী)' : ''}।${hi !== lo ? ' রুটভেদে দূরত্ব আলাদা বলে ভাড়া আলাদা।' : ''}${minNote(ds)}</p>
+      <div class="stack">${ds.map(d => directCard(d, cur(d).pay === lo && hi !== lo)).join('')}</div>`;
+    if(state.showChange){
+      const cs = oneChange(a, b).sort(byPay).filter(t => cur(t).pay <= hi * 1.6 + 10).slice(0, 5);
+      html += cs.length ? `<h2>একবার বাস বদলে</h2><p class="sub">দুই বাসের ভাড়া যোগ করে দেখানো হয়েছে। প্রতিটি বাসে সর্বনিম্ন ভাড়া ${bn(MIN)} টাকা।</p><div class="stack">${cs.map(changeCard).join('')}</div>`
+                        : `<div class="note" style="margin-top:16px">বাস বদলে যাওয়ার সুবিধাজনক আর কোনো উপায় চার্টে পাওয়া যায়নি।</div>`;
+    }else{
+      html += `<div class="stack" style="margin-top:14px"><button class="more" id="show-change">বাস বদলে যাওয়ার উপায়ও দেখুন</button></div>`;
+    }
+  }else{
+    const cs = oneChange(a, b).sort(byPay).slice(0, 8);
+    if(cs.length){
+      html += `<h2>${title}</h2><p class="sub">${state.example ? 'উদাহরণ · ' : ''}সরাসরি কোনো রুট চার্টে নেই। একবার বাস বদলে যাওয়া যাবে, সবচেয়ে কম মোট ${fmt(cur(cs[0]).pay)} টাকা দিতে হবে${state.student ? ' (শিক্ষার্থী)' : ''}। প্রতিটি বাসে সর্বনিম্ন ভাড়া ${bn(MIN)} টাকা।</p>
+        <div class="stack">${cs.map(changeCard).join('')}</div>`;
+    }else{
+      html += `<h2>${title}</h2><div class="note">এই দুই স্টপেজের মধ্যে সরাসরি বা একবার বাস বদলে যাওয়ার কোনো রুট এই ${bn(R.length)}টি চার্টে পাওয়া যায়নি। কাছের বড় কোনো স্টপেজ (যেমন ফার্মগেট, গাবতলী, সায়েদাবাদ) বেছে আবার চেষ্টা করুন।</div>`;
+    }
+  }
+  el.innerHTML = html;
+}
+$('results').addEventListener('click', e => {
+  const c = e.target.closest('[data-stop]');
+  if(c){ state.from = +c.dataset.stop; state.example = false; cFrom.set(); save(); render(); $('to').focus(); return; }
+  if(e.target.id === 'show-change'){ state.showChange = true; render(); }
+});
+
+function routeRow(r){
+  return `<a class="rrow" href="#${r.hash}"><span class="rno">${esc(r.no)}</span><span class="rname">${rname(r)}</span><span class="km">${kmTxt(r.kmn[r.kmn.length - 1])} কিমি<br>${bn(r.s.length)}টি স্টপেজ</span></a>`;
+}
+const sortedRoutes = R.map((r, i) => i).sort((a, b) => (+asc(R[a].no).replace(/\D/g, '')) - (+asc(R[b].no).replace(/\D/g, '')));
+const routeText = R.map(r => norm([r.no, r.frm, r.to, ...r.raw, ...r.s.map(s => S[s])].join('|')));
+function renderList(){
+  const q = norm($('rfilter').value);
+  const ids = sortedRoutes.filter(i => !q || routeText[i].includes(q));
+  $('routes-sub').textContent = `${bn(R.length)}টি রুটের ভাড়ার চার্ট, ${bn(S.length)}টি স্টপেজ।`;
+  $('rlist').innerHTML = ids.length ? ids.map(i => routeRow(R[i])).join('') : '<div class="note">মিল পাওয়া যায়নি। রুট নম্বর বা স্টপেজের নাম অন্যভাবে লিখে দেখুন।</div>';
+}
+$('rfilter').addEventListener('input', renderList);
+
+let curRoute = -1; const pickR = {i: 0, j: 0};
+function renderRoute(){
+  if(curRoute < 0) return;
+  const r = R[curRoute], n = r.s.length, el = $('view-route');
+  const opts = sel => r.s.map((s, p) => `<option value="${p}"${p === sel ? ' selected' : ''}>${esc(S[s])}</option>`).join('');
+  let rows = '';
+  for(let p = 0; p < n; p++){
+    let tds = '';
+    for(let q = 0; q < p; q++){ const c = quote(r, p, q, state.student); tds += `<td class="f" title="${esc(S[r.s[q]])} → ${esc(S[r.s[p]])}">${c.orig < c.pay ? '<s>' + fmt(c.orig) + '</s>' : ''}${fmt(c.pay)}</td>`; }
+    tds += `<td class="diag">${esc(r.raw[p])}</td>`;
+    if(n - 1 - p > 0) tds += `<td class="blank" colspan="${n - 1 - p}"></td>`;
+    rows += `<tr><th class="stop" scope="row">${esc(r.raw[p])}</th><td class="km">${bn(r.km[p])}</td>${tds}</tr>`;
+  }
+  const same = pickR.i === pickR.j, G = quote(r, pickR.i, pickR.j, false), T = quote(r, pickR.i, pickR.j, true), Q = state.student ? T : G;
+  el.innerHTML = `<a class="back" href="#routes">← সব রুট</a>
+    <h2><span class="rno" style="font-size:22px;vertical-align:middle">${esc(r.no)}</span> ${rname(r)}</h2>
+    <p class="sub">মোট দূরত্ব ${kmTxt(r.kmn[n - 1])} কিমি · ${bn(n)}টি স্টপেজ · চার্টের ছবি ${bn(r.img)}.jpg</p>
+    ${r.note ? `<div class="note" style="margin-bottom:12px">${esc(r.note)}</div>` : ''}
+    <div class="calc">
+      <div class="row"><div><label for="r-from">উঠবেন</label><select id="r-from">${opts(pickR.i)}</select></div>
+      <div><label for="r-to">নামবেন</label><select id="r-to">${opts(pickR.j)}</select></div></div>
+      <div class="out">${same ? '<span class="meta">দুটি আলাদা স্টপেজ বেছে নিন।</span>' :
+        `<span class="meta">${kmTxt(dist(r, pickR.i, pickR.j))} কিমি · পুরো ভাড়া ${fmt(G.pay)} টাকা · শিক্ষার্থী ${fmt(T.pay)} টাকা${Q.orig < Q.pay ? `<br>${state.student ? 'আসল অর্ধেক ভাড়া' : 'কিমি হিসাবে আসল ভাড়া'} ${fmt(Q.orig)} টাকা, সর্বনিম্ন ভাড়া ${bn(MIN)} টাকা বলে দিতে হবে ${bn(MIN)} টাকা।` : ''}</span>
+         <span class="amt">${fmt(Q.pay)}<small>টাকা${state.student ? ' (শিক্ষার্থী)' : ''}</small></span>`}</div>
+    </div>
+    <div class="tools"><h3>ভাড়ার পুরো চার্ট</h3>
+      <div class="seg plain" role="group" aria-label="যাত্রী"><button type="button" data-who="all" aria-pressed="${!state.student}">সাধারণ</button><button type="button" data-who="student" aria-pressed="${state.student}">শিক্ষার্থী</button></div></div>
+    <div class="chart" tabindex="0" aria-label="ভাড়ার চার্ট"><table><thead><tr><th class="stop">স্টপেজ</th><th>কিমি</th><th colspan="${n}" style="text-align:left">ভাড়া (টাকা)${state.student ? ', শিক্ষার্থী' : ''}</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="sub" style="margin-top:8px">প্রতিটি ঘর বাঁ দিকের স্টপেজ থেকে ওই কলামের সবুজ ঘরের স্টপেজ পর্যন্ত ভাড়া। কাটা সংখ্যাটি আসল ভাড়া; সর্বনিম্ন ভাড়া ${bn(MIN)} টাকা বলে তার পাশের ${bn(MIN)} টাকা দিতে হবে। ডানে-বাঁয়ে সরিয়ে পুরো চার্ট দেখুন।</p>`;
+}
+$('view-route').addEventListener('change', e => {
+  if(e.target.id === 'r-from') pickR.i = +e.target.value; else if(e.target.id === 'r-to') pickR.j = +e.target.value; else return;
+  renderRoute();
+});
+$('view-route').addEventListener('click', e => { const b = e.target.closest('[data-who]'); if(b) setStudent(b.dataset.who === 'student'); });
+
+// ---------- views ----------
+function route(){
+  const h = (location.hash || '').replace('#', '');
+  const isRoute = h in byHash, isList = h === 'routes';
+  $('view-khoj').hidden = isRoute || isList; $('view-routes').hidden = !isList; $('view-route').hidden = !isRoute;
+  $('tab-khoj').toggleAttribute('aria-current', !(isRoute || isList)); $('tab-routes').toggleAttribute('aria-current', isRoute || isList);
+  if(!(isRoute || isList)) $('tab-khoj').setAttribute('aria-current', 'page'); else $('tab-routes').setAttribute('aria-current', 'page');
+  if(isList) renderList();
+  if(isRoute){
+    const ri = byHash[h];
+    if(ri !== curRoute){
+      curRoute = ri; const r = R[ri];
+      const a = r.s.indexOf(state.from), b = r.s.indexOf(state.to);
+      pickR.i = a >= 0 ? a : 0; pickR.j = b >= 0 ? b : r.s.length - 1;
+    }
+    renderRoute(); window.scrollTo(0, 0);
+  }
+}
+window.addEventListener('hashchange', route);
+
+load(); cFrom.set(); cTo.set(); syncWho(); render(); route();
+$('foot-count').textContent = `এই অ্যাপে ${bn(R.length)}টি রুটের চার্ট ও ${bn(S.length)}টি স্টপেজ আছে। বাস দুই দিকেই চলে ধরে ভাড়া দেখানো হয়েছে।`;
+})();
+</script>
+</body>
+</html>

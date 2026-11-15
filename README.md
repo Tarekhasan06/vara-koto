@@ -1,0 +1,30 @@
+# ভাড়া কত?
+
+ঢাকার বাসের সরকারি ভাড়ার চার্ট থেকে সঠিক ভাড়া জানার ওয়েব অ্যাপ। পুরো ইন্টারফেস বাংলায়।
+
+**অ্যাপ খুলুন:** https://tarekhasan06.github.io/vara-koto/
+
+## কী করা যায়
+
+- কোথা থেকে উঠবেন আর কোথায় নামবেন বেছে নিলে সব সরাসরি রুট, দূরত্ব ও ভাড়া দেখায়।
+- সরাসরি রুট না থাকলে একবার বাস বদলে যাওয়ার উপায় দেখায়।
+- শিক্ষার্থীর ভাড়া চার্টের ভাড়ার অর্ধেক।
+- **সর্বনিম্ন ভাড়া ১০ টাকা, সাধারণ ও শিক্ষার্থী সবার জন্য।** আসল ভাড়া ১০ টাকার কম হলে আসল ভাড়া ও দিতে হবে এমন ভাড়া দুটোই দেখায়। যেমন পুরো ভাড়া ১৫ টাকা হলে শিক্ষার্থী দেবেন ১০ টাকা।
+- ৭৮টি রুটের পুরো ভাড়ার চার্ট, ২৪২টি স্টপেজ।
+
+## তথ্যের উৎস
+
+ঢাকা মেট্রো যাত্রী ও পণ্য পরিবহন কমিটির ডিজেলচালিত বাস ভাড়ার চার্ট (প্রজ্ঞাপন: ০৭ আশ্বিন ১৪৩৩ / ২২ সেপ্টেম্বর ২০২৬), প্রতি কিলোমিটার ২.৭০ টাকা। চার্টের ছবি থেকে প্রতিটি ঘর পড়ে `source/data/` ফোল্ডারে লেখা হয়েছে এবং `verify.py` দিয়ে কিলোমিটারের হিসাবের সাথে মিলিয়ে দেখা হয়েছে।
+
+## English
+
+A Bangla web app for looking up Dhaka bus fares from the official fare charts: direct routes, one-change journeys, student half fare, and a 10 taka minimum fare for everyone. It is a single static page (`index.html`) with no server.
+
+To rebuild after editing the chart data:
+
+```
+cd source
+python3 verify.py
+python3 build_data.py
+python3 build.py        # writes source/dist/index.html; copy it to the repository root
+```
