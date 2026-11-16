@@ -1,0 +1,276 @@
+# English names. Format: Bangla name | English name | other English spellings people may type (optional, comma separated)
+# First block: every stop. Second block: route end-point names that are worded differently on a chart heading.
+ফুলবাড়িয়া | Fulbaria | Phulbaria
+নয়াবাজার | Nayabazar | Noya Bazar
+জিঞ্জিরা | Zinzira | Jinjira
+কোনাখোলা | Konakhola
+রামের কান্দা | Ramerkanda
+সৈয়দপুর | Syedpur | Saidpur
+খারশুর | Kharshur
+টিকরপুর | Tikarpur
+আগলা বাজার | Agla Bazar
+বক্সনগর | Boxnagar | Baksnagar
+শুরগঞ্জ | Shurganj
+বাগমারা | Bagmara
+নবাবগঞ্জ | Nawabganj | Nababganj
+মাঝির কান্দা | Majhirkanda
+বান্দুরা | Bandura
+বারুয়াখালী | Baruakhali
+খাসিয়াখালী বেড়িবাঁধ | Khasiakhali Beribadh
+মগবাজার | Moghbazar | Mogbazar, Maghbazar
+মহাখালী | Mohakhali | Mahakhali
+বনানী | Banani | Bonani
+এয়ারপোর্ট | Airport | Bimanbandar
+টঙ্গী | Tongi | Tangi
+গাজীপুর চৌরাস্তা | Gazipur Chowrasta | Joydebpur Chowrasta, Chourasta
+কোনাবাড়ী | Konabari
+সফিপুর | Shafipur | Sofipur
+চন্দ্রা | Chandra | Chondra
+কালিয়াকৈর | Kaliakair | Kaliakoir
+কাঁচপুর | Kanchpur | Kachpur
+সায়েদাবাদ | Sayedabad | Saidabad, Sayedabad
+মালিবাগ | Malibagh | Malibag
+নতুন বাজার | Notun Bazar | Natun Bazar
+টঙ্গী (বাস্তুহারা) | Tongi (Bastuhara)
+চিড়িয়াখানা | Chiriakhana (Zoo) | Mirpur Zoo
+মিরপুর-১ | Mirpur-1
+টেকনিক্যাল | Technical
+শ্যামলী | Shyamoli | Shamoli
+আসাদগেট | Asad Gate | Asadgate
+ফার্মগেট | Farmgate | Farm Gate
+প্রেসক্লাব | Press Club
+তাঁতী বাজার | Tanti Bazar | Tati Bazar
+বাবু বাজার ব্রীজ | Babu Bazar Bridge
+চুন কুটিয়া | Chunkutia
+কেরানীগঞ্জ (নতুন জেলখানা) | Keraniganj (New Jail)
+মতিঝিল | Motijheel | Motijhil
+প্রগতি সরণী | Pragati Sarani | Progoti Sarani
+আব্দুল্লাহপুর | Abdullahpur
+বোর্ড বাজার | Board Bazar
+যাত্রাবাড়ী | Jatrabari | Jatrabari, Zatrabari
+মদনপুর | Madanpur | Modonpur
+মোগড়াপাড়া (সোনারগাঁও) | Mograpara (Sonargaon)
+মেঘনা ঘাট | Meghna Ghat
+মিরপুর-১২ | Mirpur-12 | Pallabi, Pallobi
+মিরপুর-১০ | Mirpur-10
+বিজয় স্মরণী | Bijoy Sarani | Bijoy Sharani
+গুলিস্তান | Gulistan
+মাওয়া | Mawa | Maowa
+বনশ্রী | Banasree | Bonosree, Banasri
+রামপুরা | Rampura
+গুলশান-১ | Gulshan-1
+আগারগাঁও | Agargaon
+কল্যাণপুর | Kallyanpur | Kalyanpur
+গাবতলী | Gabtoli | Gabtali
+আমিন বাজার | Amin Bazar
+সাভার | Savar | Sabhar
+বসিলা | Bosila | Basila
+আসাদ এভিনিউ | Asad Avenue
+মিরপুর-২ | Mirpur-2
+মিরপুর-১১ | Mirpur-11
+পূরবী | Purobi | Purabi
+কালশী | Kalshi
+শেওড়া বাজার | Shewra Bazar | Sheora Bazar
+জসীমউদ্দিন | Jasimuddin | Josimuddin
+কামারপাড়া | Kamarpara
+ধউর | Dhour | Dhaur
+মোহাম্মদপুর টাউন হল | Mohammadpur Town Hall | Town Hall
+মোহাম্মদপুর শিয়া মসজিদ | Mohammadpur Shia Mosque | Shia Masjid
+মানিক মিয়া এভিনিউ | Manik Mia Avenue
+শুক্রাবাদ | Shukrabad | Sukrabad
+নিউ মার্কেট | New Market | Newmarket
+আজিমপুর | Azimpur | Ajimpur
+চানখাঁরপুল | Chankharpul | Chankharpool
+শনির আখড়া | Shonir Akhra | Sanir Akhra
+সাইনবোর্ড | Signboard | Sign Board
+সদরঘাট | Sadarghat
+পল্টন | Paltan | Polton
+শাহবাগ | Shahbagh | Shahbag
+সায়েন্স ল্যাব | Science Lab | Science Laboratory
+নবীনগর | Nabinagar | Nobinogor
+ইপিজেড | EPZ
+মিরপুর-১৪ | Mirpur-14
+নন্দন পার্ক | Nandan Park | Nondon Park
+হেমায়েতপুর | Hemayetpur
+বাংলামোটর | Banglamotor | Bangla Motor
+জিপিও | GPO
+টিকাটুলি | Tikatuli
+উত্তরা | Uttara
+ভাষানটেক | Bhashantek | Vashantek
+উত্তরা দিয়াবাড়ী | Uttara Diabari
+হাউজ বিল্ডিং | House Building
+দিয়াবাড়ী (মিরপুর) | Diabari (Mirpur)
+মাজার রোড | Mazar Road
+মোহাম্মদপুর | Mohammadpur | Mohammedpur
+ঘাটারচর | Ghatarchar
+আহাদবক্স | Ahad Box
+চিটাগাং রোড | Chittagong Road | Chitagong Road
+শংকর | Shankar | Shongkor
+শ্যামলী (শংকর–ধানমন্ডি অংশ) | Shyamoli (Shankar–Dhanmondi section)
+ধানমন্ডি-১৫ | Dhanmondi-15
+জিগাতলা | Jigatola | Zigatola
+হানিফ ফ্লাইওভার | Hanif Flyover
+রায়েরবাগ | Rayerbagh | Rayerbag
+সোনারগাঁও | Sonargaon
+কদমতলী | Kadamtali
+রুহিতপুর | Ruhitpur
+কোমরগঞ্জ | Komarganj
+খাসিয়াখালী | Khasiakhali
+খিলগাঁও খিদমা হাসপাতাল | Khilgaon Khidmah Hospital
+খিলগাঁও রেলগেট | Khilgaon Rail Gate
+বাসাবো | Basabo | Bashabo
+মুগদা | Mugda
+কমলাপুর | Kamalapur | Komlapur
+ইসিবি চত্বর | ECB Chattar | ECB Square, Manikdi
+কাজীপাড়া | Kazipara
+শেওড়াপাড়া | Shewrapara | Sheorapara
+শিশুমেলা | Shishu Mela
+কলেজগেট | College Gate
+দুয়ারিপাড়া | Duaripara
+মিরপুর-১১ ১/২ | Mirpur-11 1/2 | Mirpur 11.5
+বৈকালী হোটেল | Boikali Hotel
+টিএন্ডটি | T&T | TNT
+রায়সাহেব বাজার | Rai Saheb Bazar | Roy Shaheb Bazar
+ভিক্টোরিয়া পার্ক | Victoria Park
+আনসার ক্যাম্প | Ansar Camp
+দারুসসালাম | Darus Salam | Darussalam
+কাওরান বাজার | Karwan Bazar | Kawran Bazar
+স্টেডিয়াম | Stadium
+ইত্তেফাক | Ittefaq | Ittefak
+বাইপাইল | Baipail | Baipayl
+আজমপুর | Azampur
+খিলক্ষেত | Khilkhet
+কুড়িল বিশ্বরোড | Kuril Bishwa Road | Kuril Bissho Road
+স্টাফরোড | Staff Road
+কাকলী | Kakoli | Kakali
+বাংলাদেশ ব্যাংক | Bangladesh Bank
+ইউবিএল | UBL
+বালুঘাট | Balughat
+উত্তরা (রানীগঞ্জ) | Uttara (Raniganj)
+রামপুরা টিভি সেন্টার | Rampura TV Centre | TV Center
+কাকরাইল | Kakrail
+বঙ্গবন্ধু এভিনিউ | Bangabandhu Avenue
+পীরজঙ্গী মাজার | Pirjangi Mazar
+গুলশান-২ | Gulshan-2
+মৌচাক | Mouchak
+মোহাম্মদপুর (আসাদ এভিনিউ) | Mohammadpur (Asad Avenue)
+সাতরাস্তা | Satrasta | Sat Rasta
+নাবিস্কো | Nabisco
+তিতুমীর কলেজ | Titumir College
+নারায়ণগঞ্জ লিংক রোড | Narayanganj Link Road | Link Road
+চেরাগআলী | Cherag Ali | Cheragali
+গাজীপুর | Gazipur
+জুরাইন | Jurain
+পোস্তগোলা | Postogola
+নারায়ণগঞ্জ | Narayanganj | Narayangonj
+ধামরাই | Dhamrai
+ধলেশ্বর | Dhaleshwar
+কচুক্ষেত | Kochukhet | Kachukhet
+সৈনিক ক্লাব | Sainik Club | Shoinik Club
+বাড্ডা লিংক রোড | Badda Link Road
+বেরাইদ | Beraid
+মিরপুর-৬ | Mirpur-6
+মেরাদিয়া | Meradia
+ডেমরা স্টাফ কোয়ার্টার | Demra Staff Quarter
+খেজুর বাগান | Khejur Bagan
+ত্রিমোহনী | Trimohoni | Trimohini
+নর্দাপাড়া ব্রীজ | Nordapara Bridge
+মন্থাহাজীর মোড় | Monthahajir Mor | Mostahajir Mor
+আমুলিয়া স্টাফ কোয়ার্টার | Amulia Staff Quarter
+মিরপুর ডিওএইচএস | Mirpur DOHS
+ক্যান্টনমেন্ট সিগন্যাল গেট | Cantonment Signal Gate
+ওয়ার্ক সপ | Workshop
+বাড্ডা | Badda
+সুলতানা কামাল ব্রীজ | Sultana Kamal Bridge
+তারাবো বিশ্বরোড | Tarabo Bishwa Road
+প্রশিকা মোড় | Proshika Mor
+অরিজিনাল-১০ | Original-10
+জিল্লুর রহমান ফ্লাইওভার | Zillur Rahman Flyover
+আশুলিয়া | Ashulia
+কলাবাগান | Kalabagan | Kolabagan
+কুর্মিটোলা জেনারেল হাসপাতাল | Kurmitola General Hospital
+কালামপুর | Kalampur
+শিয়ালবাড়ী | Shialbari
+ফকিরাপুল | Fakirapool | Fakirapul
+খিলগাঁও ফ্লাইওভার | Khilgaon Flyover
+রাজারবাগ | Rajarbagh | Rajarbag
+পলাশী | Palashi | Polashi
+ইসলামপুর | Islampur
+মানিকগঞ্জ | Manikganj
+বানিয়াজুড়ি | Baniajuri
+বরংগাইল | Barangail
+উথুলী | Uthuli
+পাটুরিয়া | Paturia
+জনপথ | Janapath | Jonopoth
+মধ্য বাড্ডা | Middle Badda | Moddho Badda
+উত্তর বাড্ডা | North Badda | Uttar Badda
+বসুন্ধরা | Bashundhara
+নর্দ্দা | Nadda | Nodda, Norda
+রাজলক্ষ্মী | Rajlakshmi | Rajlokkhi
+কাটাবন | Katabon | Kataban
+শ্যামলী রিং রোড | Shyamoli Ring Road
+রাজেন্দ্রপুর চৌরাস্তা | Rajendrapur Chowrasta
+হোতাপাড়া | Hotapara
+বাঘের বাজার | Bagher Bazar
+মাওনা চৌরাস্তা | Mawna Chowrasta | Maona
+শ্রীপুর | Sreepur | Sripur
+বর্মী | Barmi
+মদনগঞ্জ | Madanganj
+নীলক্ষেত | Nilkhet
+জগন্নাথ বিশ্ববিদ্যালয় | Jagannath University
+ইডেন কলেজ | Eden College
+জাপান গার্ডেন সিটি | Japan Garden City
+ফ্যান্টাসি কিংডম | Fantasy Kingdom
+মিরপুর রূপনগর | Mirpur Rupnagar
+দৈনিক বাংলা | Dainik Bangla | Doinik Bangla
+শাপলা চত্বর | Shapla Chattar
+আরামবাগ | Arambagh | Arambag
+বকশিবাজার | Bakshibazar | Bokshi Bazar
+ঢাকেশ্বরী | Dhakeshwari
+খামারবাড়ি মোড় | Khamarbari Mor
+ইকুরিয়া | Ikuria
+রাসেল স্কয়ার | Russell Square
+উড়োজাহাজ ক্রসিং | Urojahaj Crossing
+জিরানী | Zirani | Jirani
+ডেমরা ব্রীজ | Demra Bridge
+মানিকনগর | Maniknagar
+কামরাঙ্গীরচর (বেড়ীবাঁধ) | Kamrangirchar (Beribadh)
+শাহআলী মাজার | Shah Ali Mazar
+জিরাবো | Zirabo | Jirabo
+নরসিংহপুর | Narasinghapur | Norshinghopur
+কাশেমপুর | Kashimpur | Kashempur
+মৎস্যভবন | Matsya Bhaban | Motsho Bhobon
+রেইনবো | Rainbow
+সোনারগাঁও হোটেল মোড় | Sonargaon Hotel Mor
+
+# ---- route end-point wordings from chart headings
+টংগী বাস্তুহারা | Tongi Bastuhara
+কাঁচপুর ব্রীজ | Kanchpur Bridge
+সোনারগাঁও (মেঘনাঘাট) | Sonargaon (Meghna Ghat)
+বনশ্রী (মেরাদিয়া) | Banasree (Meradia)
+বছিলা | Bosila
+নন্দনপার্ক | Nandan Park
+ঘাটার চর | Ghatarchar
+খাইস্যাখালী বেড়ীবাঁধ | Khasiakhali Beribadh
+মিরপুর-১২ (ইসিবি চত্বর) | Mirpur-12 (ECB Chattar)
+মিরপুর (চিড়িয়াখানা) | Mirpur (Zoo)
+সাভার ইপিজেড | Savar EPZ
+নারায়ণগঞ্জ লিংকরোড | Narayanganj Link Road
+ফুলবাড়ীয়া পশু হাসপাতাল | Fulbaria Veterinary Hospital
+টংগী (বাস্তুহারা) | Tongi (Bastuhara)
+নারায়নগঞ্জ | Narayanganj
+মিরপুর-১ (সনি সিনেমা হল) | Mirpur-1 (Sony Cinema Hall)
+নবীনগর (সাভার) | Nabinagar (Savar)
+কমলাপুর (পীরজঙ্গী মাজার) | Kamalapur (Pirjangi Mazar)
+পল্লবী | Pallabi
+মানিকদি (ইসিবি মোড়) | Manikdi (ECB Mor)
+মোহাম্মদপুর (বাস ষ্ট্যান্ড) | Mohammadpur (Bus Stand)
+উত্তরা হাউজ বিল্ডিং | Uttara House Building
+মিরপুর চিড়িয়াখানা | Mirpur Zoo
+মিরপুর-১ (বৈশাখী সুপার মার্কেট) | Mirpur-1 (Boishakhi Super Market)
+শ্রীপুর বর্মী | Sreepur Barmi
+মেঘনাঘাট | Meghna Ghat
+চাঁনখারপুল | Chankharpul
+দিয়াবাড়ী | Diabari
+সায়দাবাদ | Sayedabad
+ডেমরা (ব্রীজ) | Demra (Bridge)

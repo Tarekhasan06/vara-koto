@@ -104,6 +104,43 @@ ALIAS = {N(k): N(v) for k, v in ALIAS.items()}
 OVERRIDE = {(i, N(k)): N(v) for (i, k), v in OVERRIDE.items()}
 EXTRA = {N(k): [N(x) for x in v] for k, v in EXTRA.items()}
 
+NOTE_EN = {
+ 11: 'The printed chart repeats the Gulistan column twice; it is kept once here.',
+ 17: 'The chart heading gives the total as 61.15 km, the table prints 61.2 km at the last stop. Fares are printed for 61.15 km.',
+ 19: 'The printed chart shows a stop named "Shyamoli" between Shankar and Dhanmondi; it is kept apart from the main Shyamoli stop.',
+ 20: 'On the printed chart the last two stops are named "Khaisyakhali Beribadh" and "Beribadh".',
+ 26: 'The printed table runs from Sayedabad towards Balughat.',
+ 48: 'The chart heading gives the total as 45.30 km, the table prints 45.5 km at the last stop.',
+ 68: 'The chart heading gives the total as 21.6 km, the table prints 19.9 km at the last stop.',
+ 70: 'The printed chart shows 8 taka for New Market to Manik Mia Avenue; with the 10 taka minimum you pay 10.',
+ 80: 'The chart stop "Sonargaon" lies between Rainbow and Russell Square; it is shown here as "Sonargaon Hotel Mor".',
+}
+BN_DIGITS = '০১২৩৪৫৬৭৮৯'
+def no_en(no):
+    return no.replace('এ', 'A').translate({ord(b): str(i) for i, b in enumerate(BN_DIGITS)})
+
+def load_en(path):
+    en, alt = {}, {}
+    for raw in open(path, encoding='utf-8'):
+        t = raw.strip()
+        if not t or t.startswith('#'):
+            continue
+        f = [x.strip() for x in t.split('|')]
+        en[N(f[0])] = f[1]
+        alt[N(f[0])] = [x.strip() for x in f[2].split(',') if x.strip()] if len(f) > 2 else []
+    return en, alt
+
+def load_buses(path):
+    out = {}
+    for raw in open(path, encoding='utf-8'):
+        t = raw.strip()
+        if not t or t.startswith('#'):
+            continue
+        f = [x.strip() for x in t.split('|')]
+        out[N(f[0])] = ([x.strip() for x in f[1].split(',') if x.strip()],
+                        [x.strip() for x in f[2].split(',') if x.strip()] if len(f) > 2 else [])
+    return out
+
 def canon(img, name):
     name = N(name)
     if (img, name) in OVERRIDE:
@@ -111,7 +148,13 @@ def canon(img, name):
     return ALIAS.get(name, name)
 
 def build():
+    import os, infer
+    here = os.path.dirname(os.path.abspath(__file__))
+    EN, ALT = load_en(os.path.join(here, 'data', 'names_en.txt'))
+    BUS = load_buses(os.path.join(here, 'data', 'buses.txt'))
     rs = verify.load()
+    known = {N(r['no']) for r in rs}
+    assert not [k for k in BUS if k not in known], 'buses.txt names a route that has no chart'
     stops = {}            # canonical -> id
     variants = collections.defaultdict(set)
     routes = []
@@ -130,7 +173,9 @@ def build():
             rows.append(list(row))   # printed value; the 10 Tk minimum is applied in the app
             irregular += sum(1 for v in row if v < MINFARE)
         routes.append(dict(
-            no=r['no'], frm=N(r['frm']), to=N(r['to']), img=r['img'], note=NOTE_BN.get(r['img'], ''),
+            no=r['no'], noEn=no_en(r['no']), frm=N(r['frm']), to=N(r['to']), frmEn=EN.get(N(r['frm'])), toEn=EN.get(N(r['to'])),
+            img=r['img'], note=NOTE_BN.get(r['img'], ''), noteEn=NOTE_EN.get(r['img'], ''),
+            bus=BUS.get(N(r['no']), ([], []))[0], busEn=BUS.get(N(r['no']), ([], []))[1],
             s=ids, raw=[N(raw) for raw, _ in r['stops']], km=[k for _, k in r['stops']], f=rows))
     used = {N(raw) for r in rs for raw, _ in r['stops']}
     unused = [k for k in ALIAS if k not in used]
@@ -142,12 +187,19 @@ def build():
     for i, c in enumerate(names):
         extra = sorted((variants[c] | set(EXTRA.get(c, []))) - {c})
         alias.append(extra)
-    return dict(stops=names, alias=alias, routes=routes), irregular
+    missing = [c for c in names if c not in EN] + [x for r in routes for x in (r['frm'], r['to']) if x not in EN]
+    assert not missing, ('no English name for', missing)
+    data = dict(stops=names, en=[EN[c] for c in names], alias=alias, alt=[ALT[c] for c in names], routes=routes)
+    extra = infer.infer(data)
+    for r, ex in zip(routes, extra):
+        r['x'] = [[c['s'], c['lo'], c['km']] for c in ex]     # stops passed without a chart row: [stop, chart stop before, approx km]
+    return data, irregular
 
 if __name__ == '__main__':
     data, irr = build()
     json.dump(data, open('data.json', 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
-    print(len(data['stops']), 'stops,', len(data['routes']), 'routes,', irr, 'printed cells below the minimum')
+    print(len(data['stops']), 'stops,', len(data['routes']), 'routes,', irr, 'printed cells below the minimum;',
+          sum(len(r['x']) for r in data['routes']), 'unlisted stops;', sum(1 for r in data['routes'] if r['bus']), 'routes with bus names')
     # report
     import os
     print('size', os.path.getsize('data.json'))

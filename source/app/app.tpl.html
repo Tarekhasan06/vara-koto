@@ -42,7 +42,11 @@ a{color:var(--green-ink)}
 .wrap{max-width:760px;margin:0 auto;padding:0 16px 56px}
 
 /* masthead */
-.mast{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:22px 0 14px}
+.mast{display:flex;align-items:flex-end;justify-content:space-between;gap:12px 16px;flex-wrap:wrap;padding:22px 0 14px}
+.nav{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.langs{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px}
+.langs button{border:0;background:transparent;color:var(--muted);padding:3px 13px;border-radius:999px;cursor:pointer;font-weight:600;font-size:14px}
+.langs button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .brand{display:flex;flex-direction:column;gap:0;text-decoration:none;color:var(--ink)}
 .brand b{font-family:var(--font-display);font-weight:800;font-size:44px;line-height:1.05;letter-spacing:-.5px}
 .brand b i{font-style:normal;color:var(--red)}
@@ -172,16 +176,36 @@ td.f s{color:var(--muted);font-size:13px;margin-right:6px;text-decoration-thickn
   .stack>*{animation:in .28s ease both}
   @keyframes in{from{transform:translateY(6px);opacity:.4}to{transform:none;opacity:1}}
 }
+
+/* additions: bilingual list, letter groups, unlisted stops, bus names */
+.opt .sec{font-style:normal;color:var(--muted);font-size:13.5px;margin-left:8px}
+.grp{position:sticky;top:-6px;z-index:1;background:var(--card);color:var(--green-ink);font-family:var(--font-display);font-weight:800;font-size:15px;line-height:1.3;padding:6px 10px 2px;border-bottom:1px solid var(--line)}
+.amt.range{font-size:27px}
+.busline{font-size:14.5px;color:var(--muted)}
+.busline b{color:var(--ink);font-weight:600}
+.rbus{display:block;color:var(--muted);font-weight:400;font-size:13.5px}
+.hint{font-size:14.5px;color:var(--muted);border-left:3px solid var(--sun);padding-left:10px;max-width:65ch}
+p.hint{margin:0 0 4px}
+.path li.un::before{border-style:dashed;background:var(--card)}
+.path li.un span:first-child{color:var(--muted)}
+@media (max-width:619px){ .nav{flex-direction:row;align-items:center;justify-content:space-between;width:100%;flex-wrap:wrap} }
+@media (max-width:420px){ .amt.range{font-size:22px} }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="mast">
-    <a class="brand" href="#khoj" id="brand"><b>ভাড়া কত<i>?</i></b><span>ঢাকার বাসের সরকারি ভাড়ার চার্ট থেকে সঠিক ভাড়া</span></a>
-    <nav class="tabs" aria-label="পাতা">
-      <a href="#khoj" id="tab-khoj">ভাড়া খুঁজুন</a>
-      <a href="#routes" id="tab-routes">সব রুট</a>
-    </nav>
+    <a class="brand" href="#khoj" id="brand"><b>ভাড়া কত<i>?</i></b><span data-t="tagline"></span></a>
+    <div class="nav">
+      <div class="langs" role="group" aria-label="ভাষা / Language">
+        <button type="button" data-lang="bn" aria-pressed="true">বাংলা</button>
+        <button type="button" data-lang="en" aria-pressed="false">English</button>
+      </div>
+      <nav class="tabs" aria-label="Pages">
+        <a href="#khoj" id="tab-khoj" data-t="tabSearch"></a>
+        <a href="#routes" id="tab-routes" data-t="tabRoutes"></a>
+      </nav>
+    </div>
   </header>
 
   <main>
@@ -189,38 +213,38 @@ td.f s{color:var(--muted);font-size:13px;margin-right:6px;text-decoration-thickn
       <form class="board" id="board" autocomplete="off">
         <div class="fields">
           <div class="field">
-            <label for="from">কোথা থেকে উঠবেন</label>
-            <input id="from" type="text" inputmode="text" placeholder="স্টপেজের নাম লিখুন" role="combobox" aria-expanded="false" aria-controls="from-list" aria-autocomplete="list">
-            <button type="button" class="clear" id="from-clear" aria-label="মুছুন" hidden><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+            <label for="from" data-t="from"></label>
+            <input id="from" type="text" inputmode="text" data-tp="ph" role="combobox" aria-expanded="false" aria-controls="from-list" aria-autocomplete="list">
+            <button type="button" class="clear" id="from-clear" data-ta="clear" hidden><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
             <div class="list" id="from-list" role="listbox" hidden></div>
           </div>
-          <button type="button" class="swap" id="swap" aria-label="দুই স্টপেজ অদলবদল করুন" title="অদলবদল">
+          <button type="button" class="swap" id="swap" data-ta="swap">
             <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v15m0 0l-4-4m4 4l4-4M17 20V5m0 0l-4 4m4-4l4 4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="field">
-            <label for="to">কোথায় নামবেন</label>
-            <input id="to" type="text" inputmode="text" placeholder="স্টপেজের নাম লিখুন" role="combobox" aria-expanded="false" aria-controls="to-list" aria-autocomplete="list">
-            <button type="button" class="clear" id="to-clear" aria-label="মুছুন" hidden><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+            <label for="to" data-t="to"></label>
+            <input id="to" type="text" inputmode="text" data-tp="ph" role="combobox" aria-expanded="false" aria-controls="to-list" aria-autocomplete="list">
+            <button type="button" class="clear" id="to-clear" data-ta="clear" hidden><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
             <div class="list" id="to-list" role="listbox" hidden></div>
           </div>
         </div>
         <div class="who">
-          <span id="who-label">যাত্রী</span>
+          <span id="who-label" data-t="passenger"></span>
           <div class="seg" role="group" aria-labelledby="who-label">
-            <button type="button" id="who-all" aria-pressed="true">সাধারণ</button>
-            <button type="button" id="who-student" aria-pressed="false">শিক্ষার্থী (অর্ধেক ভাড়া)</button>
+            <button type="button" id="who-all" aria-pressed="true" data-t="general"></button>
+            <button type="button" id="who-student" aria-pressed="false" data-t="student"></button>
           </div>
         </div>
-        <div class="minline">সর্বনিম্ন ভাড়া ১০ টাকা। সাধারণ ও শিক্ষার্থী, সবার জন্য একই।</div>
+        <div class="minline" data-t="minline"></div>
       </form>
       <div id="results"></div>
     </section>
 
     <section id="view-routes" hidden>
-      <h2>সব রুট</h2>
+      <h2 data-t="tabRoutes"></h2>
       <p class="sub" id="routes-sub"></p>
-      <label for="rfilter" class="sub" style="display:block;margin-bottom:6px">রুট নম্বর বা স্টপেজের নাম দিয়ে খুঁজুন</label>
-      <input class="filter" id="rfilter" type="text" placeholder="যেমন: ২৯৫ বা ফার্মগেট">
+      <label for="rfilter" class="sub" style="display:block;margin-bottom:6px" data-t="filterLabel"></label>
+      <input class="filter" id="rfilter" type="text" data-tp="filterPh">
       <div class="rlist" id="rlist"></div>
     </section>
 
@@ -228,9 +252,9 @@ td.f s{color:var(--muted);font-size:13px;margin-right:6px;text-decoration-thickn
   </main>
 
   <footer class="foot">
-    <p><b>তথ্যের উৎস:</b> ঢাকা মেট্রো যাত্রী ও পণ্য পরিবহন কমিটির ডিজেলচালিত বাস ভাড়ার চার্ট (প্রজ্ঞাপন: ০৭ আশ্বিন ১৪৩৩ / ২২ সেপ্টেম্বর ২০২৬)। ভাড়ার হার প্রতি কিলোমিটার ২.৭০ টাকা।</p>
-    <p><b>সর্বনিম্ন ভাড়া ১০ টাকা।</b> কিলোমিটার হিসাবে ভাড়া ১০ টাকার কম হলেও ১০ টাকা দিতে হবে। শিক্ষার্থীর ভাড়া চার্টের ভাড়ার অর্ধেক, তবে অর্ধেক ১০ টাকার কম হলে শিক্ষার্থীকেও ১০ টাকা দিতে হবে। যেমন পুরো ভাড়া ১৫ টাকা হলে শিক্ষার্থী দেবেন ১০ টাকা।</p>
-    <p>প্রতিটি ভাড়া ছাপানো চার্টের ঘর থেকে নেওয়া। যেখানে আসল ভাড়া ১০ টাকার কম, সেখানে আসল ভাড়া ও দিতে হবে এমন ভাড়া দুটোই দেখানো হয়েছে। চার্ট অনুযায়ী এই ভাড়ার সাথে বাড়তি কোনো টাকা দাবি করা যাবে না।</p>
+    <p id="foot-src"></p>
+    <p id="foot-min"></p>
+    <p id="foot-note"></p>
     <p id="foot-count"></p>
   </footer>
 </div>
@@ -239,24 +263,143 @@ td.f s{color:var(--muted);font-size:13px;margin-right:6px;text-decoration-thickn
 const D = /*__DATA__*/;
 (function(){
 'use strict';
-const S = D.stops, R = D.routes;
-const BN = '০১২৩৪৫৬৭৮৯';
-const bn = x => String(x).replace(/\d/g, d => BN[d]);
-const asc = x => String(x).replace(/[০-৯]/g, d => BN.indexOf(d));
+const S = D.stops, E = D.en, R = D.routes;
+const BN = '০১২৩৪৫৬৭৮৯', MIN = 10;
+let lang = 'bn';
+const toBn = x => String(x).replace(/\d/g, d => BN[d]);
+const toAsc = x => String(x).replace(/[০-৯]/g, d => BN.indexOf(d));
+const num = x => lang === 'bn' ? toBn(x) : String(x);
+const fmt = x => num(Number.isInteger(x) ? x : x.toFixed(2));
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const $ = id => document.getElementById(id);
-const kmNum = v => Math.round(v * 100) / 100;
-const kmTxt = v => bn(kmNum(v).toFixed(2).replace(/0$/, '').replace(/\.0$/, ''));
+const kmTxt = v => num((Math.round(v * 100) / 100).toFixed(2).replace(/0$/, '').replace(/\.0$/, ''));
+const sn = id => lang === 'en' ? E[id] : S[id];          // stop name in the current language
+const so = id => lang === 'en' ? S[id] : E[id];          // and in the other one
+const rno = r => lang === 'en' ? r.noEn : r.no;
+const rname = r => lang === 'en' ? `${esc(r.frmEn)} ⇄ ${esc(r.toEn)}` : `${esc(r.frm)} ⇄ ${esc(r.to)}`;
+const buses = r => lang === 'en' ? (r.busEn.length ? r.busEn : r.bus) : (r.bus.length ? r.bus : r.busEn);
+const pl = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 
-// index: stop -> [{r, p}]
+// ---------- words ----------
+const T = {
+bn: {
+  tagline: 'ঢাকার বাসের সরকারি ভাড়ার চার্ট থেকে সঠিক ভাড়া',
+  tabSearch: 'ভাড়া খুঁজুন', tabRoutes: 'সব রুট',
+  from: 'কোথা থেকে উঠবেন', to: 'কোথায় নামবেন', ph: 'নাম লিখুন বা তালিকা থেকে বাছুন',
+  clear: 'মুছুন', swap: 'দুই স্টপেজ অদলবদল করুন',
+  passenger: 'যাত্রী', general: 'সাধারণ', student: 'শিক্ষার্থী (অর্ধেক ভাড়া)', studentShort: 'শিক্ষার্থী',
+  minline: 'সর্বনিম্ন ভাড়া ১০ টাকা। সাধারণ ও শিক্ষার্থী, সবার জন্য একই।',
+  noStop: 'এই নামে কোনো স্টপেজ চার্টে নেই। বানান বদলে দেখুন।',
+  nRoutes: n => `${toBn(n)}টি রুট`,
+  taka: 'টাকা', km: 'কিমি', pay: 'দিতে হবে', about: 'প্রায়',
+  origFare: x => `আসল ভাড়া ${x} টাকা`, minShort: 'সর্বনিম্ন ১০ টাকা',
+  fullFare: x => `পুরো ভাড়া ${x} টাকা`, studentFare: x => `শিক্ষার্থী ${x} টাকা`,
+  byNeighbours: 'আগে-পরের স্টপেজের ভাড়া',
+  boarding: 'ওঠা', between: n => `মাঝে ${toBn(n)}টি স্টপেজ`, nextStop: 'পরের স্টপেজ',
+  fromTo: (a, b) => `${a} থেকে ${b}`,
+  legFare: (p, o) => ` · ${p} টাকা${o ? ` (আসল ${o})` : ''}`,
+  pathStops: 'পথের স্টপেজ', fullChart: no => `${no} রুটের পুরো চার্ট`,
+  buses: 'বাস', cheapest: 'সবচেয়ে কম', direct: 'সরাসরি বাস',
+  changeAt: s => `${s}-এ বাস বদল`,
+  unlisted: (u, a, b) => `${u} এই রুটের চার্টে আলাদা করে নেই; এটি ${a} ও ${b}-এর মাঝে পড়ে। তাই ভাড়া এই দুই স্টপেজের ভাড়ার মধ্যে।`,
+  emptyTitle: 'কোথা থেকে কোথায় যাবেন?',
+  emptySub: 'উপরে ওঠা ও নামার স্টপেজ বেছে নিন। তালিকা বর্ণানুক্রমে সাজানো আছে; বাংলা বা ইংরেজিতে নাম লিখেও খুঁজতে পারেন।',
+  throughTitle: (s, n) => `${s} দিয়ে যায় ${toBn(n)}টি রুট`,
+  needTo: 'কোথায় নামবেন তা বেছে নিলে ভাড়া দেখাবে।', needFrom: 'কোথা থেকে উঠবেন তা বেছে নিলে ভাড়া দেখাবে।',
+  same: 'ওঠা ও নামার স্টপেজ একই। দুটি আলাদা স্টপেজ বেছে নিন।',
+  directSub: (n, lo, hi, st) => `সরাসরি ${toBn(n)}টি রুট, বাস বদলাতে হবে না · দিতে হবে ${lo}${hi ? ' থেকে ' + hi : ''} টাকা${st ? ' (শিক্ষার্থী)' : ''}।`,
+  directApprox: n => `সরাসরি ${toBn(n)}টি রুট, বাস বদলাতে হবে না।`,
+  variesNote: ' রুটভেদে দূরত্ব আলাদা বলে ভাড়া আলাদা।',
+  minNote: ' আসল ভাড়া ১০ টাকার কম হলেও সর্বনিম্ন ১০ টাকা দিতে হবে।',
+  unlistedNote: ' কিছু রুটের চার্টে এই স্টপেজ আলাদা করে নেই; সেখানে ভাড়া আগের ও পরের স্টপেজের ভাড়ার মধ্যে দেখানো হয়েছে।',
+  showChange: 'বাস বদলে যাওয়ার উপায়ও দেখুন', changeTitle: 'একবার বাস বদলে',
+  changeSub: 'দুই বাসের ভাড়া যোগ করে দেখানো হয়েছে। প্রতিটি বাসে সর্বনিম্ন ভাড়া ১০ টাকা।',
+  noChange: 'বাস বদলে যাওয়ার সুবিধাজনক আর কোনো উপায় চার্টে পাওয়া যায়নি।',
+  noDirect: (x, st) => `সরাসরি কোনো রুট চার্টে নেই। একবার বাস বদলে যাওয়া যাবে, সবচেয়ে কম মোট ${x} টাকা দিতে হবে${st ? ' (শিক্ষার্থী)' : ''}। প্রতিটি বাসে সর্বনিম্ন ভাড়া ১০ টাকা।`,
+  none: n => `এই দুই স্টপেজের মধ্যে সরাসরি বা একবার বাস বদলে যাওয়ার কোনো রুট এই ${toBn(n)}টি চার্টে পাওয়া যায়নি। কাছের বড় কোনো স্টপেজ (যেমন ফার্মগেট, গাবতলী, সায়েদাবাদ) বেছে আবার চেষ্টা করুন।`,
+  routesSub: (r, s) => `${toBn(r)}টি রুটের ভাড়ার চার্ট, ${toBn(s)}টি স্টপেজ।`,
+  filterLabel: 'রুট নম্বর, বাসের নাম বা স্টপেজের নাম দিয়ে খুঁজুন', filterPh: 'যেমন: ২৯৫ বা ফার্মগেট',
+  noMatch: 'মিল পাওয়া যায়নি। রুট নম্বর বা স্টপেজের নাম অন্যভাবে লিখে দেখুন।',
+  rowMeta: (km, n) => `${km} কিমি<br>${toBn(n)}টি স্টপেজ`,
+  back: '← সব রুট',
+  routeMeta: (km, n, img) => `মোট দূরত্ব ${km} কিমি · ${toBn(n)}টি স্টপেজ · চার্টের ছবি ${toBn(img)}.jpg`,
+  alsoPasses: 'চার্টে আলাদা ঘর নেই, তবে বাসটি এসব জায়গা দিয়েও যায়:',
+  getOn: 'উঠবেন', getOff: 'নামবেন', pickTwo: 'দুটি আলাদা স্টপেজ বেছে নিন।',
+  calcLine: (km, f, s) => `${km} কিমি · পুরো ভাড়া ${f} টাকা · শিক্ষার্থী ${s} টাকা`,
+  calcMin: o => `আসল ভাড়া ${o} টাকা; সর্বনিম্ন ভাড়া ১০ টাকা বলে দিতে হবে ১০ টাকা।`,
+  stTag: ' (শিক্ষার্থী)', chartTitle: 'ভাড়ার পুরো চার্ট', thStop: 'স্টপেজ', thFare: 'ভাড়া (টাকা)', thSt: ', শিক্ষার্থী',
+  chartHelp: 'প্রতিটি ঘর বাঁ দিকের স্টপেজ থেকে ওই কলামের সবুজ ঘরের স্টপেজ পর্যন্ত ভাড়া। কাটা সংখ্যাটি আসল ভাড়া; সর্বনিম্ন ভাড়া ১০ টাকা বলে তার পাশের ১০ টাকা দিতে হবে। ডানে-বাঁয়ে সরিয়ে পুরো চার্ট দেখুন।',
+  footSrc: '<b>তথ্যের উৎস:</b> ঢাকা মেট্রো যাত্রী ও পণ্য পরিবহন কমিটির ডিজেলচালিত বাস ভাড়ার চার্ট (প্রজ্ঞাপন: ০৭ আশ্বিন ১৪৩৩ / ২২ সেপ্টেম্বর ২০২৬)। ভাড়ার হার প্রতি কিলোমিটার ২.৭০ টাকা।',
+  footMin: '<b>সর্বনিম্ন ভাড়া ১০ টাকা।</b> কিলোমিটার হিসাবে ভাড়া ১০ টাকার কম হলেও ১০ টাকা দিতে হবে। শিক্ষার্থীর ভাড়া চার্টের ভাড়ার অর্ধেক, তবে অর্ধেক ১০ টাকার কম হলে শিক্ষার্থীকেও ১০ টাকা দিতে হবে। যেমন পুরো ভাড়া ১৫ টাকা হলে শিক্ষার্থী দেবেন ১০ টাকা।',
+  footNote: 'প্রতিটি ভাড়া ছাপানো চার্টের ঘর থেকে নেওয়া। যেখানে আসল ভাড়া ১০ টাকার কম, সেখানে আসল ভাড়া ও দিতে হবে এমন ভাড়া দুটোই দেখানো হয়েছে। চার্ট অনুযায়ী এই ভাড়ার সাথে বাড়তি কোনো টাকা দাবি করা যাবে না।',
+  footCount: (r, s) => `এই অ্যাপে ${toBn(r)}টি রুটের চার্ট ও ${toBn(s)}টি স্টপেজ আছে। বাস দুই দিকেই চলে ধরে ভাড়া দেখানো হয়েছে।`,
+},
+en: {
+  tagline: 'Exact Dhaka bus fares from the official fare charts',
+  tabSearch: 'Find fare', tabRoutes: 'All routes',
+  from: 'Getting on at', to: 'Getting off at', ph: 'Type a name or pick from the list',
+  clear: 'Clear', swap: 'Swap the two stops',
+  passenger: 'Passenger', general: 'General', student: 'Student (half fare)', studentShort: 'Student',
+  minline: 'Minimum fare is 10 taka, the same for general passengers and students.',
+  noStop: 'No stop with this name on the charts. Try another spelling.',
+  nRoutes: n => pl(n, 'route'),
+  taka: 'Tk', km: 'km', pay: 'You pay', about: 'about',
+  origFare: x => `Actual fare ${x} Tk`, minShort: 'Minimum 10 Tk',
+  fullFare: x => `Full fare ${x} Tk`, studentFare: x => `Student ${x} Tk`,
+  byNeighbours: 'from the stops either side',
+  boarding: 'Board', between: n => `${pl(n, 'stop')} between`, nextStop: 'next stop',
+  fromTo: (a, b) => `${a} to ${b}`,
+  legFare: (p, o) => ` · ${p} Tk${o ? ` (actual ${o})` : ''}`,
+  pathStops: 'Stops on the way', fullChart: no => `Full chart for route ${no}`,
+  buses: 'Buses', cheapest: 'Lowest', direct: 'Direct bus',
+  changeAt: s => `Change bus at ${s}`,
+  unlisted: (u, a, b) => `${u} has no row on this route's chart; it lies between ${a} and ${b}, so the fare is between the fares to those two stops.`,
+  emptyTitle: 'Where are you travelling?',
+  emptySub: 'Pick where you get on and off above. The list is in alphabetical order, and you can also type a name in English or Bangla.',
+  throughTitle: (s, n) => `${pl(n, 'route')} pass ${s}`,
+  needTo: 'Pick where you get off to see the fare.', needFrom: 'Pick where you get on to see the fare.',
+  same: 'Both stops are the same. Pick two different stops.',
+  directSub: (n, lo, hi, st) => `${pl(n, 'direct route')}, no bus change needed · you pay ${lo}${hi ? ' to ' + hi : ''} Tk${st ? ' (student)' : ''}.`,
+  directApprox: n => `${pl(n, 'direct route')}, no bus change needed.`,
+  variesNote: ' Fares differ because the distance differs by route.',
+  minNote: ' Where the actual fare is under 10 Tk you still pay the 10 Tk minimum.',
+  unlistedNote: ' On some routes this stop has no row of its own on the chart; there the fare is shown between the fares to the stops before and after it.',
+  showChange: 'Also show journeys with a bus change', changeTitle: 'With one bus change',
+  changeSub: 'The two fares are added together. Each bus has the 10 Tk minimum.',
+  noChange: 'No sensible journey with a bus change was found on the charts.',
+  noDirect: (x, st) => `No direct route on the charts. With one bus change the lowest total is ${x} Tk${st ? ' (student)' : ''}. Each bus has the 10 Tk minimum.`,
+  none: n => `No direct route or one-change journey between these two stops was found on these ${n} charts. Try a larger stop nearby, such as Farmgate, Gabtoli or Sayedabad.`,
+  routesSub: (r, s) => `Fare charts for ${r} routes, ${s} stops.`,
+  filterLabel: 'Search by route number, bus name or stop name', filterPh: 'e.g. 295 or Farmgate',
+  noMatch: 'No match. Try writing the route number or stop name another way.',
+  rowMeta: (km, n) => `${km} km<br>${pl(n, 'stop')}`,
+  back: '← All routes',
+  routeMeta: (km, n, img) => `Total ${km} km · ${pl(n, 'stop')} · chart image ${img}.jpg`,
+  alsoPasses: 'No row of their own on the chart, but the bus also passes:',
+  getOn: 'Get on', getOff: 'Get off', pickTwo: 'Pick two different stops.',
+  calcLine: (km, f, s) => `${km} km · full fare ${f} Tk · student ${s} Tk`,
+  calcMin: o => `Actual fare ${o} Tk; the minimum fare is 10 Tk, so you pay 10 Tk.`,
+  stTag: ' (student)', chartTitle: 'Full fare chart', thStop: 'Stop', thFare: 'Fare (Tk)', thSt: ', student',
+  chartHelp: 'Each cell is the fare from the stop on the left to the stop in the green cell of that column. A crossed-out number is the actual fare; with the 10 Tk minimum you pay the 10 next to it. Scroll sideways to see the whole chart.',
+  footSrc: '<b>Source:</b> diesel bus fare charts of the Dhaka Metro Passenger and Goods Transport Committee (gazette of 22 September 2026 / 07 Ashwin 1433). The rate is 2.70 taka per kilometre.',
+  footMin: '<b>The minimum fare is 10 taka.</b> If the fare by distance is under 10 taka you still pay 10. A student pays half the chart fare, but if half is under 10 taka the student also pays 10. For example, when the full fare is 15 taka a student pays 10.',
+  footNote: 'Every fare is taken from a cell of the printed chart. Where the actual fare is under 10 taka, both the actual fare and the amount you pay are shown. By the chart, nothing may be charged on top of these fares.',
+  footCount: (r, s) => `This app holds the charts of ${r} routes and ${s} stops. Fares are shown assuming buses run both ways.`,
+}};
+const t = (k, ...a) => { const v = T[lang][k]; return typeof v === 'function' ? v(...a) : v; };
+
+// ---------- index ----------
 const through = S.map(() => []);
-R.forEach((r, ri) => { r.kmn = r.km.map(Number); r.s.forEach((s, p) => through[s].push({r: ri, p})); r.hash = 'r-' + asc(r.no).replace(/[^0-9]/g, ''); });
+R.forEach((r, ri) => {
+  r.kmn = r.km.map(Number); r.hash = 'r-' + r.noEn.replace(/[^0-9]/g, '');
+  r.at = new Map();
+  r.s.forEach((s, p) => { r.at.set(s, {c: true, i: p, km: r.kmn[p]}); through[s].push(ri); });
+  r.x.forEach(([s, lo, km]) => { r.at.set(s, {c: false, lo, hi: lo + 1, km}); through[s].push(ri); });
+});
 const byHash = {}; R.forEach((r, i) => byHash[r.hash] = i);
 
 function fare(r, i, j){ const a = Math.min(i, j), b = Math.max(i, j); return r.f[b][a]; }
 function dist(r, i, j){ return Math.abs(r.kmn[i] - r.kmn[j]); }
-const MIN = 10;
-const fmt = x => bn(Number.isInteger(x) ? x : x.toFixed(2));
 // fare by distance alone (2.70 per km, rounded), before the minimum
 function calcFare(r, i, j){ const d100 = Math.round(dist(r, i, j) * 100); return Math.floor((d100 * 27 + 500) / 1000); }
 // what one passenger pays for one bus: orig = fare before the 10 Tk minimum, pay = fare after it
@@ -268,111 +411,136 @@ function quote(r, i, j, student){
   return {orig, pay: Math.max(MIN, chart)};
 }
 const add = (a, b) => ({orig: a.orig + b.orig, pay: a.pay + b.pay});
+// routes that carry you from a to b without a change; exact when both stops have a chart row
 function direct(a, b){
   const out = [];
-  for(const x of through[a]){
-    const r = R[x.r]; const q = r.s.indexOf(b);
-    if(q >= 0) out.push({r: x.r, i: x.p, j: q, fare: fare(r, x.p, q), km: dist(r, x.p, q), g: quote(r, x.p, q, false), s: quote(r, x.p, q, true)});
+  for(const ri of through[a]){
+    const r = R[ri], A = r.at.get(a), B = r.at.get(b); if(!B) continue;
+    const km = Math.abs(A.km - B.km);
+    if(A.c && B.c){ out.push({r: ri, a, b, km, exact: true, fare: fare(r, A.i, B.i), g: quote(r, A.i, B.i, false), s: quote(r, A.i, B.i, true)}); continue; }
+    if(km < 0.05) continue;
+    const [F, Z] = A.km < B.km ? [A, B] : [B, A];
+    const inF = F.c ? F.i : F.hi, inZ = Z.c ? Z.i : Z.lo, outF = F.c ? F.i : F.lo, outZ = Z.c ? Z.i : Z.hi;
+    const low = inF < inZ ? fare(r, inF, inZ) : 0, high = fare(r, outF, outZ);
+    const mk = h => { const lo = Math.max(MIN, low * h), hi = Math.max(MIN, high * h); return {lo, hi, pay: hi, orig: hi}; };
+    out.push({r: ri, a, b, km, exact: false, fare: high, g: mk(1), s: mk(0.5)});
   }
-  return out.sort((u, v) => u.fare - v.fare || u.km - v.km);
+  return out;
 }
 function oneChange(a, b){
   const best = new Map();
   for(const x of through[a]){
-    const r1 = R[x.r]; if(r1.s.includes(b)) continue;
+    const r1 = R[x], A = r1.at.get(a); if(!A.c || r1.at.has(b)) continue;
     for(let p = 0; p < r1.s.length; p++){
-      if(p === x.p) continue;
+      if(p === A.i) continue;
       const mid = r1.s[p];
       for(const y of through[mid]){
-        if(y.r === x.r) continue;
-        const r2 = R[y.r]; if(r2.s.includes(a)) continue;
-        const q = r2.s.indexOf(b); if(q < 0) continue;
-        const g = add(quote(r1, x.p, p, false), quote(r2, y.p, q, false)), s = add(quote(r1, x.p, p, true), quote(r2, y.p, q, true));
-        const t = {r1: x.r, i1: x.p, j1: p, r2: y.r, i2: y.p, j2: q, mid, g, s, fare: g.pay,
-                   km: dist(r1, x.p, p) + dist(r2, y.p, q)};
-        const key = x.r + '_' + y.r, old = best.get(key);
-        if(!old || t.fare < old.fare || (t.fare === old.fare && t.km < old.km)) best.set(key, t);
+        if(y === x) continue;
+        const r2 = R[y], M = r2.at.get(mid), B = r2.at.get(b); if(!M.c || !B || !B.c || r2.at.has(a)) continue;
+        const g = add(quote(r1, A.i, p, false), quote(r2, M.i, B.i, false)), s = add(quote(r1, A.i, p, true), quote(r2, M.i, B.i, true));
+        const t2 = {l1: {r: x, a, b: mid, exact: true}, l2: {r: y, a: mid, b, exact: true}, mid, g, s, fare: g.pay,
+                    km: dist(r1, A.i, p) + dist(r2, M.i, B.i)};
+        const key = x + '_' + y, old = best.get(key);
+        if(!old || t2.fare < old.fare || (t2.fare === old.fare && t2.km < old.km)) best.set(key, t2);
       }
     }
   }
-  return [...best.values()].sort((u, v) => u.fare - v.fare || u.km - v.km);
+  return [...best.values()];
 }
-// exposed for checks
-window.__fare = {direct, oneChange, fare, quote, S, R};
+window.__fare = {direct, oneChange, fare, quote, S, E, R};
 
-// ---------- search text ----------
+// ---------- stop search ----------
 function norm(s){
-  return s.normalize('NFC').toLowerCase().replace(/[0-9]/g, d => BN[d])
-    .replace(/[\s\-–—().,\/:ঃ়ঁ]/g, '').replace(/ী/g, 'ি').replace(/ূ/g, 'ু').replace(/ণ/g, 'ন').replace(/য/g, 'য');
+  return toAsc(s.normalize('NFC').toLowerCase()).replace(/[\s\-–—().,\/:&'’ঃ়ঁ]/g, '').replace(/ী/g, 'ি').replace(/ূ/g, 'ু').replace(/ণ/g, 'ন');
 }
-const stopIdx = S.map((name, id) => ({id, name, n: norm(name), al: D.alias[id].map(a => ({a, n: norm(a)})), routes: through[id].length}));
-const popular = [...stopIdx].sort((a, b) => b.routes - a.routes || a.name.localeCompare(b.name, 'bn'));
+// rough sound of a name typed in English letters, so mohakhali = mahakhali, saidabad = sayedabad
+function skel(n){
+  if(!/^[a-z0-9]+$/.test(n)) return '';
+  const s = n.replace(/ph/g, 'f').replace(/z/g, 'j').replace(/q/g, 'k');
+  return (s[0] + s.slice(1).replace(/[aeiouywh]/g, '')).replace(/(.)\1+/g, '$1');
+}
+const stopIdx = S.map((name, id) => {
+  const keys = [];
+  const push = (txt, main) => { const n = norm(txt); keys.push({txt, n, sk: skel(n), main}); };
+  push(name, true); push(E[id], true); D.alias[id].forEach(a => push(a, false)); D.alt[id].forEach(a => push(a, false));
+  return {id, keys, routes: through[id].length};
+});
+const coll = {bn: new Intl.Collator('bn'), en: new Intl.Collator('en')};
+const byName = (a, b) => coll[lang].compare(sn(a.s.id), sn(b.s.id));
 function findStops(q){
-  const n = norm(q); if(!n) return popular.map(s => ({s}));
-  const res = [];
+  const n = norm(q);
+  if(!n) return stopIdx.map(s => ({s, rank: 0, via: ''})).sort(byName);
+  const sk = skel(n), res = [];
   for(const s of stopIdx){
-    let rank = -1, via = '';
-    if(s.n === n) rank = 0; else if(s.n.startsWith(n)) rank = 1; else if(s.n.includes(n)) rank = 3;
-    for(const a of s.al){
-      const k = a.n === n ? 0.5 : a.n.startsWith(n) ? 2 : a.n.includes(n) ? 4 : -1;
-      if(k >= 0 && (rank < 0 || k < rank)){ rank = k; via = a.a; }
+    let rank = 99, via = '';
+    for(const k of s.keys){
+      let v = k.n === n ? 0 : k.n.startsWith(n) ? 1 : k.n.includes(n) ? 2 : 99;
+      if(v === 99 && sk.length >= 3 && k.sk) v = k.sk === sk ? 5 : k.sk.startsWith(sk) ? 6 : 99;
+      if(v < 99 && !k.main) v += 0.4;
+      if(v < rank){ rank = v; via = k.main ? '' : k.txt; }
     }
-    if(rank >= 0) res.push({s, rank, via});
+    if(rank < 99) res.push({s, rank, via});
   }
-  return res.sort((a, b) => a.rank - b.rank || b.s.routes - a.s.routes || a.s.name.localeCompare(b.s.name, 'bn'));
+  return res.sort((a, b) => a.rank - b.rank || byName(a, b));
 }
 
 // ---------- state ----------
-const state = {from: null, to: null, student: false, example: false, showChange: false};
-function save(){ try{ localStorage.setItem('vara-koto', JSON.stringify({f: state.from, t: state.to, s: state.student})); }catch(e){} }
+const state = {from: null, to: null, student: false, showChange: false};
+function save(){ try{ localStorage.setItem('vara-koto', JSON.stringify({s: state.student, l: lang})); }catch(e){} }
 function load(){
   let v = null; try{ v = JSON.parse(localStorage.getItem('vara-koto') || 'null'); }catch(e){}
-  const hot = window.claude && window.claude.hot && window.claude.hot.data; if(hot && 'f' in hot) v = hot;
+  if(v){ state.student = !!v.s; if(v.l === 'en' || v.l === 'bn') lang = v.l; }
+  const hot = window.claude && window.claude.hot && window.claude.hot.data;      // only when the page reloads itself after an update
   const ok = x => Number.isInteger(x) && x >= 0 && x < S.length;
-  if(v && (ok(v.f) || ok(v.t))){ state.from = ok(v.f) ? v.f : null; state.to = ok(v.t) ? v.t : null; state.student = !!v.s; }
-  else{ state.from = S.indexOf('ফার্মগেট'); state.to = S.indexOf('গুলিস্তান'); state.example = true; if(v) state.student = !!v.s; }
+  if(hot){ if(ok(hot.f)) state.from = hot.f; if(ok(hot.t)) state.to = hot.t; }
 }
-try{ window.claude && window.claude.hot && window.claude.hot.snapshot && window.claude.hot.snapshot(() => ({f: state.from, t: state.to, s: state.student})); }catch(e){}
+try{ window.claude && window.claude.hot && window.claude.hot.snapshot && window.claude.hot.snapshot(() => ({f: state.from, t: state.to})); }catch(e){}
 
 // ---------- combobox ----------
 function combo(key){
   const input = $(key), list = $(key + '-list'), clear = $(key + '-clear');
   let items = [], active = -1;
-  function paint(){
-    if(!items.length){ list.innerHTML = '<div class="none">এই নামে কোনো স্টপেজ চার্টে নেই। বানান বদলে দেখুন।</div>'; return; }
-    list.innerHTML = items.slice(0, 80).map((it, k) =>
-      `<div class="opt" role="option" id="${key}-o${k}" data-id="${it.s.id}" aria-selected="${k === active}"><span><b>${esc(it.s.name)}</b>${it.via ? `<em>${esc(it.via)}</em>` : ''}</span><small>${bn(it.s.routes)}টি রুট</small></div>`).join('');
+  function paint(grouped){
+    if(!items.length){ list.innerHTML = `<div class="none">${t('noStop')}</div>`; return; }
+    let html = '', last = '';
+    items.forEach((it, k) => {
+      if(grouped){ const ch = sn(it.s.id).trim()[0].toUpperCase(); if(ch !== last){ html += `<div class="grp" aria-hidden="true">${esc(ch)}</div>`; last = ch; } }
+      html += `<div class="opt" role="option" id="${key}-o${k}" data-id="${it.s.id}" aria-selected="${k === active}"><span><b>${esc(sn(it.s.id))}</b><i class="sec">${esc(so(it.s.id))}</i>${it.via ? `<em>${esc(it.via)}</em>` : ''}</span><small>${t('nRoutes', it.s.routes)}</small></div>`;
+    });
+    list.innerHTML = html;
   }
-  function open(){ items = findStops(state[key] != null && input.value === S[state[key]] ? '' : input.value); active = -1; paint(); list.hidden = false; input.setAttribute('aria-expanded', 'true'); }
+  const query = () => state[key] != null && input.value === sn(state[key]) ? '' : input.value;
+  function open(){ const q = query(); items = findStops(q); active = -1; paint(!norm(q)); list.hidden = false; input.setAttribute('aria-expanded', 'true'); }
   function close(){ list.hidden = true; input.setAttribute('aria-expanded', 'false'); }
-  function pick(id){ state[key] = id; state.example = false; state.showChange = false; input.value = S[id]; clear.hidden = false; close(); save(); render(); }
+  function pick(id){ state[key] = id; state.showChange = false; input.value = sn(id); clear.hidden = false; close(); render(); }
   input.addEventListener('focus', () => { input.select(); open(); });
-  input.addEventListener('input', () => { clear.hidden = !input.value; items = findStops(input.value); active = items.length && input.value ? 0 : -1; paint(); list.hidden = false; });
+  input.addEventListener('input', () => { clear.hidden = !input.value; items = findStops(input.value); const typed = !!norm(input.value); active = items.length && typed ? 0 : -1; paint(!typed); list.hidden = false; });
   input.addEventListener('keydown', e => {
     if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
       e.preventDefault(); if(list.hidden) open();
-      const n = Math.min(items.length, 80); if(!n) return;
-      active = (active + (e.key === 'ArrowDown' ? 1 : -1) + n) % n; paint();
+      const n = items.length; if(!n) return;
+      active = (active + (e.key === 'ArrowDown' ? 1 : -1) + n) % n;
+      list.querySelectorAll('.opt').forEach((o, k) => o.setAttribute('aria-selected', String(k === active)));
       const el = $(key + '-o' + active); if(el) el.scrollIntoView({block: 'nearest'});
     }else if(e.key === 'Enter'){
-      e.preventDefault(); const it = items[active >= 0 ? active : 0]; if(!list.hidden && it) pick(it.s.id);
+      e.preventDefault(); const it = items[active >= 0 ? active : 0]; if(!list.hidden && it && norm(input.value)) pick(it.s.id);
     }else if(e.key === 'Escape'){ close(); }
   });
   input.addEventListener('blur', () => setTimeout(() => {
     close();
-    if(!input.value.trim()){ if(state[key] != null){ state[key] = null; state.example = false; save(); render(); } clear.hidden = true; return; }
+    if(!input.value.trim()){ if(state[key] != null){ state[key] = null; render(); } clear.hidden = true; return; }
     const exact = findStops(input.value)[0];
-    if(exact && exact.rank <= 0.5 && exact.s.id !== state[key]) pick(exact.s.id);
-    else if(state[key] != null) input.value = S[state[key]];
+    if(exact && exact.rank < 1 && exact.s.id !== state[key]) pick(exact.s.id);
+    else if(state[key] != null) input.value = sn(state[key]);
   }, 120));
   list.addEventListener('mousedown', e => e.preventDefault());
   list.addEventListener('click', e => { const o = e.target.closest('.opt'); if(o) pick(+o.dataset.id); });
-  clear.addEventListener('click', () => { input.value = ''; state[key] = null; state.example = false; clear.hidden = true; save(); render(); input.focus(); });
-  return {set(){ input.value = state[key] != null ? S[state[key]] : ''; clear.hidden = !input.value; }};
+  clear.addEventListener('click', () => { input.value = ''; state[key] = null; clear.hidden = true; render(); input.focus(); });
+  return {set(){ input.value = state[key] != null ? sn(state[key]) : ''; clear.hidden = !input.value; }};
 }
 const cFrom = combo('from'), cTo = combo('to');
 $('board').addEventListener('submit', e => e.preventDefault());
-$('swap').addEventListener('click', () => { const t = state.from; state.from = state.to; state.to = t; state.example = false; cFrom.set(); cTo.set(); save(); render(); });
+$('swap').addEventListener('click', () => { const x = state.from; state.from = state.to; state.to = x; cFrom.set(); cTo.set(); render(); });
 function setStudent(v){ state.student = v; save(); syncWho(); render(); renderRoute(); }
 function syncWho(){
   document.querySelectorAll('[data-who]').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.who === 'student') === state.student)));
@@ -382,95 +550,88 @@ $('who-all').addEventListener('click', () => setStudent(false));
 $('who-student').addEventListener('click', () => setStudent(true));
 
 // ---------- rendering ----------
-const rname = r => `${esc(r.frm)} ⇄ ${esc(r.to)}`;
 const cur = x => state.student ? x.s : x.g;
-function priceBox(g, s){
-  const q = state.student ? s : g, cut = q.orig < q.pay;
-  return (state.student ? '<span class="tag">শিক্ষার্থী</span>' : '') +
-    `<span class="cap">দিতে হবে</span><span class="amt">${fmt(q.pay)}<small>টাকা</small></span>` +
-    (cut ? `<span class="orig">আসল ভাড়া ${fmt(q.orig)} টাকা</span><span class="full">সর্বনিম্ন ${bn(MIN)} টাকা</span>` : '') +
-    (state.student ? `<span class="full">পুরো ভাড়া ${fmt(g.pay)} টাকা</span>` : `<span class="full">শিক্ষার্থী ${fmt(s.pay)} টাকা</span>`);
+const amount = v => v.lo != null && v.lo !== v.hi ? `${fmt(v.lo)}–${fmt(v.hi)}` : fmt(v.pay);
+function priceBox(x){
+  const q = cur(x), o = state.student ? x.g : x.s, ranged = q.lo != null && q.lo !== q.hi;
+  return (state.student ? `<span class="tag">${t('studentShort')}</span>` : '') +
+    `<span class="cap">${t('pay')}</span><span class="amt${ranged ? ' range' : ''}">${amount(q)}<small>${t('taka')}</small></span>` +
+    (x.exact === false ? `<span class="full">${t('byNeighbours')}</span>` : '') +
+    (q.orig < q.pay ? `<span class="orig">${t('origFare', fmt(q.orig))}</span><span class="full">${t('minShort')}</span>` : '') +
+    `<span class="full">${state.student ? t('fullFare', amount(o)) : t('studentFare', amount(o))}</span>`;
 }
-function pathList(r, i, j){
-  const step = i < j ? 1 : -1, li = [];
-  for(let p = i; p !== j + step; p += step){
-    const end = p === i || p === j;
-    li.push(`<li class="${end ? 'end' : ''}"><span>${esc(S[r.s[p]])}</span><span>${p === i ? 'ওঠা' : kmTxt(dist(r, i, p)) + ' কিমি'}</span></li>`);
-  }
-  return `<ol class="path">${li.join('')}</ol>`;
+// every point of the ride, in travel order
+function points(r, a, b){
+  const A = r.at.get(a), B = r.at.get(b), lo = Math.min(A.km, B.km), hi = Math.max(A.km, B.km);
+  const mid = [];
+  r.s.forEach((s, p) => { if(s !== a && s !== b && r.kmn[p] > lo && r.kmn[p] < hi) mid.push({s, km: r.kmn[p], c: true}); });
+  if(A.km > B.km) mid.reverse();
+  return [{s: a, km: A.km, c: A.c}, ...mid, {s: b, km: B.km, c: B.c}];
 }
-function legHtml(r, i, j, showFare){
-  const between = Math.abs(i - j) - 1, q = quote(r, i, j, state.student);
-  const f = showFare ? ` · ${fmt(q.pay)} টাকা${q.orig < q.pay ? ' (আসল ' + fmt(q.orig) + ')' : ''}` : '';
-  return `<div class="leg"><div class="head"><span class="rno">${esc(r.no)}</span><span class="rname">${rname(r)}</span></div>
-    <div class="meta">${esc(S[r.s[i]])} থেকে ${esc(S[r.s[j]])} · ${kmTxt(dist(r, i, j))} কিমি · ${between > 0 ? 'মাঝে ' + bn(between) + 'টি স্টপেজ' : 'পরের স্টপেজ'}${f}</div>
-    <details class="way"><summary>পথের স্টপেজ</summary>${pathList(r, i, j)}<a href="#${r.hash}">${esc(r.no)} রুটের পুরো চার্ট</a></details></div>`;
+function busLine(r){ const b = buses(r); return b.length ? `<div class="busline">${t('buses')}: <b>${esc(b.join(', '))}</b></div>` : ''; }
+function legHtml(x, showFare){
+  const r = R[x.r], pts = points(r, x.a, x.b), A = pts[0], B = pts[pts.length - 1], between = pts.length - 2;
+  let f = '';
+  if(showFare){ const q = quote(r, r.at.get(x.a).i, r.at.get(x.b).i, state.student); f = t('legFare', fmt(q.pay), q.orig < q.pay ? fmt(q.orig) : ''); }
+  const hints = [A, B].filter(p => !p.c).map(p => { const at = r.at.get(p.s); return `<div class="hint">${esc(t('unlisted', sn(p.s), sn(r.s[at.lo]), sn(r.s[at.hi])))}</div>`; }).join('');
+  const li = pts.map((p, k) => `<li class="${k === 0 || k === pts.length - 1 ? 'end' : ''}${p.c ? '' : ' un'}"><span>${esc(sn(p.s))}</span><span>${k === 0 ? t('boarding') : (p.c && A.c ? kmTxt(Math.abs(p.km - A.km)) : '≈ ' + num(Math.abs(p.km - A.km).toFixed(1))) + ' ' + t('km')}</span></li>`).join('');
+  return `<div class="leg"><div class="head"><span class="rno">${esc(rno(r))}</span><span class="rname">${rname(r)}</span></div>${busLine(r)}
+    <div class="meta">${esc(t('fromTo', sn(x.a), sn(x.b)))} · ${x.exact === false ? t('about') + ' ' + num(Math.abs(A.km - B.km).toFixed(1)) : kmTxt(Math.abs(A.km - B.km))} ${t('km')} · ${between > 0 ? t('between', between) : t('nextStop')}${f}</div>${hints}
+    <details class="way"><summary>${t('pathStops')}</summary><ol class="path">${li}</ol><a href="#${r.hash}">${esc(t('fullChart', rno(r)))}</a></details></div>`;
 }
 function directCard(d, best){
-  const r = R[d.r];
-  return `<article class="ticket${best ? ' best' : ''}"><div class="main">${legHtml(r, d.i, d.j, false)}</div><div class="price">${best ? '<span class="bestmark">সবচেয়ে কম</span>' : ''}${priceBox(d.g, d.s)}</div></article>`;
+  return `<article class="ticket${best ? ' best' : ''}"><div class="main">${legHtml(d, false)}</div><div class="price">${best ? `<span class="bestmark">${t('cheapest')}</span>` : ''}${priceBox(d)}</div></article>`;
 }
-function changeCard(t){
-  return `<article class="ticket"><div class="main">${legHtml(R[t.r1], t.i1, t.j1, true)}<div class="change">${esc(S[t.mid])}-এ বাস বদল</div>${legHtml(R[t.r2], t.i2, t.j2, true)}</div>
-    <div class="price">${priceBox(t.g, t.s)}</div></article>`;
+function changeCard(c){
+  return `<article class="ticket"><div class="main">${legHtml(c.l1, true)}<div class="change">${esc(t('changeAt', sn(c.mid)))}</div>${legHtml(c.l2, true)}</div><div class="price">${priceBox(c)}</div></article>`;
+}
+function routeRow(r){
+  const b = buses(r);
+  return `<a class="rrow" href="#${r.hash}"><span class="rno">${esc(rno(r))}</span><span class="rname">${rname(r)}${b.length ? `<small class="rbus">${esc(b.join(', '))}</small>` : ''}</span><span class="km">${t('rowMeta', kmTxt(r.kmn[r.kmn.length - 1]), r.s.length)}</span></a>`;
 }
 function render(){
   const el = $('results'), a = state.from, b = state.to;
-  if(a == null && b == null){
-    el.innerHTML = `<h2>কোথা থেকে কোথায় যাবেন?</h2><p class="sub">উপরে দুটি স্টপেজ বেছে নিন। জনপ্রিয় কয়েকটি স্টপেজ:</p>
-      <div class="chips">${popular.slice(0, 14).map(s => `<button class="chip" data-stop="${s.id}">${esc(s.name)}</button>`).join('')}</div>`;
-    return;
-  }
+  if(a == null && b == null){ el.innerHTML = `<h2>${t('emptyTitle')}</h2><p class="sub">${t('emptySub')}</p>`; return; }
   if(a == null || b == null){
     const s = a != null ? a : b, list = through[s];
-    el.innerHTML = `<h2>${esc(S[s])} দিয়ে যায় ${bn(list.length)}টি রুট</h2><p class="sub">${a != null ? 'কোথায় নামবেন তা বেছে নিলে ভাড়া দেখাবে।' : 'কোথা থেকে উঠবেন তা বেছে নিলে ভাড়া দেখাবে।'}</p>
-      <div class="rlist">${list.map(x => routeRow(R[x.r])).join('')}</div>`;
+    el.innerHTML = `<h2>${esc(t('throughTitle', sn(s), list.length))}</h2><p class="sub">${a != null ? t('needTo') : t('needFrom')}</p><div class="rlist">${list.map(x => routeRow(R[x])).join('')}</div>`;
     return;
   }
-  if(a === b){ el.innerHTML = `<div class="note" style="margin-top:22px">ওঠা ও নামার স্টপেজ একই। দুটি আলাদা স্টপেজ বেছে নিন।</div>`; return; }
+  if(a === b){ el.innerHTML = `<div class="note" style="margin-top:22px">${t('same')}</div>`; return; }
   const byPay = (u, v) => cur(u).pay - cur(v).pay || u.fare - v.fare || u.km - v.km;
-  const ds = direct(a, b).sort(byPay);
-  const minNote = list => list.some(x => cur(x).orig < cur(x).pay) ? ` আসল ভাড়া ${bn(MIN)} টাকার কম হলেও সর্বনিম্ন ${bn(MIN)} টাকা দিতে হবে।` : '';
-  const title = `${esc(S[a])} থেকে ${esc(S[b])}`;
-  let html = '';
-  if(ds.length){
-    const lo = cur(ds[0]).pay, hi = cur(ds[ds.length - 1]).pay;
-    html += `<h2>${title}</h2><p class="sub">${state.example ? 'উদাহরণ · ' : ''}সরাসরি ${bn(ds.length)}টি রুট · দিতে হবে ${fmt(lo)}${hi !== lo ? ' থেকে ' + fmt(hi) : ''} টাকা${state.student ? ' (শিক্ষার্থী)' : ''}।${hi !== lo ? ' রুটভেদে দূরত্ব আলাদা বলে ভাড়া আলাদা।' : ''}${minNote(ds)}</p>
-      <div class="stack">${ds.map(d => directCard(d, cur(d).pay === lo && hi !== lo)).join('')}</div>`;
+  const all = direct(a, b), ex = all.filter(d => d.exact).sort(byPay), ap = all.filter(d => !d.exact).sort(byPay);
+  const title = `<h2>${esc(t('fromTo', sn(a), sn(b)))}</h2>`;
+  let html = title;
+  if(all.length){
+    let sub, lo = null, hi = null;
+    if(ex.length){
+      lo = cur(ex[0]).pay; hi = cur(ex[ex.length - 1]).pay;
+      sub = t('directSub', all.length, fmt(lo), hi !== lo ? fmt(hi) : '', state.student) + (hi !== lo ? t('variesNote') : '') + (ex.some(x => cur(x).orig < cur(x).pay) ? t('minNote') : '');
+    }else sub = t('directApprox', all.length);
+    if(ap.length) sub += t('unlistedNote');
+    html += `<p class="sub">${sub}</p><div class="stack">${ex.map(d => directCard(d, cur(d).pay === lo && hi !== lo)).join('')}${ap.map(d => directCard(d, false)).join('')}</div>`;
     if(state.showChange){
-      const cs = oneChange(a, b).sort(byPay).filter(t => cur(t).pay <= hi * 1.6 + 10).slice(0, 5);
-      html += cs.length ? `<h2>একবার বাস বদলে</h2><p class="sub">দুই বাসের ভাড়া যোগ করে দেখানো হয়েছে। প্রতিটি বাসে সর্বনিম্ন ভাড়া ${bn(MIN)} টাকা।</p><div class="stack">${cs.map(changeCard).join('')}</div>`
-                        : `<div class="note" style="margin-top:16px">বাস বদলে যাওয়ার সুবিধাজনক আর কোনো উপায় চার্টে পাওয়া যায়নি।</div>`;
-    }else{
-      html += `<div class="stack" style="margin-top:14px"><button class="more" id="show-change">বাস বদলে যাওয়ার উপায়ও দেখুন</button></div>`;
-    }
+      const top = Math.max(...all.map(d => cur(d).pay));
+      const cs = oneChange(a, b).sort(byPay).filter(c => cur(c).pay <= top * 1.6 + 10).slice(0, 5);
+      html += cs.length ? `<h2>${t('changeTitle')}</h2><p class="sub">${t('changeSub')}</p><div class="stack">${cs.map(changeCard).join('')}</div>`
+                        : `<div class="note" style="margin-top:16px">${t('noChange')}</div>`;
+    }else html += `<div class="stack" style="margin-top:14px"><button class="more" id="show-change">${t('showChange')}</button></div>`;
   }else{
     const cs = oneChange(a, b).sort(byPay).slice(0, 8);
-    if(cs.length){
-      html += `<h2>${title}</h2><p class="sub">${state.example ? 'উদাহরণ · ' : ''}সরাসরি কোনো রুট চার্টে নেই। একবার বাস বদলে যাওয়া যাবে, সবচেয়ে কম মোট ${fmt(cur(cs[0]).pay)} টাকা দিতে হবে${state.student ? ' (শিক্ষার্থী)' : ''}। প্রতিটি বাসে সর্বনিম্ন ভাড়া ${bn(MIN)} টাকা।</p>
-        <div class="stack">${cs.map(changeCard).join('')}</div>`;
-    }else{
-      html += `<h2>${title}</h2><div class="note">এই দুই স্টপেজের মধ্যে সরাসরি বা একবার বাস বদলে যাওয়ার কোনো রুট এই ${bn(R.length)}টি চার্টে পাওয়া যায়নি। কাছের বড় কোনো স্টপেজ (যেমন ফার্মগেট, গাবতলী, সায়েদাবাদ) বেছে আবার চেষ্টা করুন।</div>`;
-    }
+    html += cs.length ? `<p class="sub">${t('noDirect', fmt(cur(cs[0]).pay), state.student)}</p><div class="stack">${cs.map(changeCard).join('')}</div>`
+                      : `<div class="note">${t('none', num(R.length))}</div>`;
   }
   el.innerHTML = html;
 }
-$('results').addEventListener('click', e => {
-  const c = e.target.closest('[data-stop]');
-  if(c){ state.from = +c.dataset.stop; state.example = false; cFrom.set(); save(); render(); $('to').focus(); return; }
-  if(e.target.id === 'show-change'){ state.showChange = true; render(); }
-});
+$('results').addEventListener('click', e => { if(e.target.id === 'show-change'){ state.showChange = true; render(); } });
 
-function routeRow(r){
-  return `<a class="rrow" href="#${r.hash}"><span class="rno">${esc(r.no)}</span><span class="rname">${rname(r)}</span><span class="km">${kmTxt(r.kmn[r.kmn.length - 1])} কিমি<br>${bn(r.s.length)}টি স্টপেজ</span></a>`;
-}
-const sortedRoutes = R.map((r, i) => i).sort((a, b) => (+asc(R[a].no).replace(/\D/g, '')) - (+asc(R[b].no).replace(/\D/g, '')));
-const routeText = R.map(r => norm([r.no, r.frm, r.to, ...r.raw, ...r.s.map(s => S[s])].join('|')));
+const sortedRoutes = R.map((r, i) => i).sort((a, b) => (+R[a].noEn.replace(/\D/g, '')) - (+R[b].noEn.replace(/\D/g, '')));
+const routeText = R.map(r => norm([r.no, r.noEn, r.frm, r.to, r.frmEn, r.toEn, ...r.bus, ...r.busEn, ...r.raw, ...r.s.map(s => S[s] + '|' + E[s])].join('|')));
 function renderList(){
   const q = norm($('rfilter').value);
   const ids = sortedRoutes.filter(i => !q || routeText[i].includes(q));
-  $('routes-sub').textContent = `${bn(R.length)}টি রুটের ভাড়ার চার্ট, ${bn(S.length)}টি স্টপেজ।`;
-  $('rlist').innerHTML = ids.length ? ids.map(i => routeRow(R[i])).join('') : '<div class="note">মিল পাওয়া যায়নি। রুট নম্বর বা স্টপেজের নাম অন্যভাবে লিখে দেখুন।</div>';
+  $('routes-sub').textContent = t('routesSub', num(R.length), num(S.length));
+  $('rlist').innerHTML = ids.length ? ids.map(i => routeRow(R[i])).join('') : `<div class="note">${t('noMatch')}</div>`;
 }
 $('rfilter').addEventListener('input', renderList);
 
@@ -478,31 +639,34 @@ let curRoute = -1; const pickR = {i: 0, j: 0};
 function renderRoute(){
   if(curRoute < 0) return;
   const r = R[curRoute], n = r.s.length, el = $('view-route');
-  const opts = sel => r.s.map((s, p) => `<option value="${p}"${p === sel ? ' selected' : ''}>${esc(S[s])}</option>`).join('');
+  const label = p => lang === 'en' ? E[r.s[p]] : r.raw[p];
+  const opts = sel => r.s.map((s, p) => `<option value="${p}"${p === sel ? ' selected' : ''}>${esc(sn(s))}</option>`).join('');
   let rows = '';
   for(let p = 0; p < n; p++){
     let tds = '';
-    for(let q = 0; q < p; q++){ const c = quote(r, p, q, state.student); tds += `<td class="f" title="${esc(S[r.s[q]])} → ${esc(S[r.s[p]])}">${c.orig < c.pay ? '<s>' + fmt(c.orig) + '</s>' : ''}${fmt(c.pay)}</td>`; }
-    tds += `<td class="diag">${esc(r.raw[p])}</td>`;
+    for(let q = 0; q < p; q++){ const c = quote(r, p, q, state.student); tds += `<td class="f" title="${esc(sn(r.s[q]))} → ${esc(sn(r.s[p]))}">${c.orig < c.pay ? '<s>' + fmt(c.orig) + '</s>' : ''}${fmt(c.pay)}</td>`; }
+    tds += `<td class="diag">${esc(label(p))}</td>`;
     if(n - 1 - p > 0) tds += `<td class="blank" colspan="${n - 1 - p}"></td>`;
-    rows += `<tr><th class="stop" scope="row">${esc(r.raw[p])}</th><td class="km">${bn(r.km[p])}</td>${tds}</tr>`;
+    rows += `<tr><th class="stop" scope="row">${esc(label(p))}</th><td class="km">${num(r.km[p])}</td>${tds}</tr>`;
   }
-  const same = pickR.i === pickR.j, G = quote(r, pickR.i, pickR.j, false), T = quote(r, pickR.i, pickR.j, true), Q = state.student ? T : G;
-  el.innerHTML = `<a class="back" href="#routes">← সব রুট</a>
-    <h2><span class="rno" style="font-size:22px;vertical-align:middle">${esc(r.no)}</span> ${rname(r)}</h2>
-    <p class="sub">মোট দূরত্ব ${kmTxt(r.kmn[n - 1])} কিমি · ${bn(n)}টি স্টপেজ · চার্টের ছবি ${bn(r.img)}.jpg</p>
-    ${r.note ? `<div class="note" style="margin-bottom:12px">${esc(r.note)}</div>` : ''}
+  const same = pickR.i === pickR.j, G = quote(r, pickR.i, pickR.j, false), Z = quote(r, pickR.i, pickR.j, true), Q = state.student ? Z : G;
+  const note = lang === 'en' ? r.noteEn : r.note;
+  el.innerHTML = `<a class="back" href="#routes">${t('back')}</a>
+    <h2><span class="rno" style="font-size:22px;vertical-align:middle">${esc(rno(r))}</span> ${rname(r)}</h2>
+    <p class="sub">${t('routeMeta', kmTxt(r.kmn[n - 1]), n, r.img)}</p>${busLine(r)}
+    ${note ? `<div class="note" style="margin:10px 0 12px">${esc(note)}</div>` : ''}
     <div class="calc">
-      <div class="row"><div><label for="r-from">উঠবেন</label><select id="r-from">${opts(pickR.i)}</select></div>
-      <div><label for="r-to">নামবেন</label><select id="r-to">${opts(pickR.j)}</select></div></div>
-      <div class="out">${same ? '<span class="meta">দুটি আলাদা স্টপেজ বেছে নিন।</span>' :
-        `<span class="meta">${kmTxt(dist(r, pickR.i, pickR.j))} কিমি · পুরো ভাড়া ${fmt(G.pay)} টাকা · শিক্ষার্থী ${fmt(T.pay)} টাকা${Q.orig < Q.pay ? `<br>${state.student ? 'আসল অর্ধেক ভাড়া' : 'কিমি হিসাবে আসল ভাড়া'} ${fmt(Q.orig)} টাকা, সর্বনিম্ন ভাড়া ${bn(MIN)} টাকা বলে দিতে হবে ${bn(MIN)} টাকা।` : ''}</span>
-         <span class="amt">${fmt(Q.pay)}<small>টাকা${state.student ? ' (শিক্ষার্থী)' : ''}</small></span>`}</div>
+      <div class="row"><div><label for="r-from">${t('getOn')}</label><select id="r-from">${opts(pickR.i)}</select></div>
+      <div><label for="r-to">${t('getOff')}</label><select id="r-to">${opts(pickR.j)}</select></div></div>
+      <div class="out">${same ? `<span class="meta">${t('pickTwo')}</span>` :
+        `<span class="meta">${t('calcLine', kmTxt(dist(r, pickR.i, pickR.j)), fmt(G.pay), fmt(Z.pay))}${Q.orig < Q.pay ? '<br>' + t('calcMin', fmt(Q.orig)) : ''}</span>
+         <span class="amt">${fmt(Q.pay)}<small>${t('taka')}${state.student ? t('stTag') : ''}</small></span>`}</div>
     </div>
-    <div class="tools"><h3>ভাড়ার পুরো চার্ট</h3>
-      <div class="seg plain" role="group" aria-label="যাত্রী"><button type="button" data-who="all" aria-pressed="${!state.student}">সাধারণ</button><button type="button" data-who="student" aria-pressed="${state.student}">শিক্ষার্থী</button></div></div>
-    <div class="chart" tabindex="0" aria-label="ভাড়ার চার্ট"><table><thead><tr><th class="stop">স্টপেজ</th><th>কিমি</th><th colspan="${n}" style="text-align:left">ভাড়া (টাকা)${state.student ? ', শিক্ষার্থী' : ''}</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <p class="sub" style="margin-top:8px">প্রতিটি ঘর বাঁ দিকের স্টপেজ থেকে ওই কলামের সবুজ ঘরের স্টপেজ পর্যন্ত ভাড়া। কাটা সংখ্যাটি আসল ভাড়া; সর্বনিম্ন ভাড়া ${bn(MIN)} টাকা বলে তার পাশের ${bn(MIN)} টাকা দিতে হবে। ডানে-বাঁয়ে সরিয়ে পুরো চার্ট দেখুন।</p>`;
+    ${r.x.length ? `<p class="hint">${t('alsoPasses')} ${r.x.map(x => esc(sn(x[0]))).join(', ')}</p>` : ''}
+    <div class="tools"><h3>${t('chartTitle')}</h3>
+      <div class="seg plain" role="group" aria-label="${t('passenger')}"><button type="button" data-who="all" aria-pressed="${!state.student}">${t('general')}</button><button type="button" data-who="student" aria-pressed="${state.student}">${t('studentShort')}</button></div></div>
+    <div class="chart" tabindex="0" aria-label="${t('chartTitle')}"><table><thead><tr><th class="stop">${t('thStop')}</th><th>${t('km')}</th><th colspan="${n}" style="text-align:left">${t('thFare')}${state.student ? t('thSt') : ''}</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="sub" style="margin-top:8px">${t('chartHelp')}</p>`;
 }
 $('view-route').addEventListener('change', e => {
   if(e.target.id === 'r-from') pickR.i = +e.target.value; else if(e.target.id === 'r-to') pickR.j = +e.target.value; else return;
@@ -510,13 +674,26 @@ $('view-route').addEventListener('change', e => {
 });
 $('view-route').addEventListener('click', e => { const b = e.target.closest('[data-who]'); if(b) setStudent(b.dataset.who === 'student'); });
 
+// ---------- language ----------
+function applyLang(){
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-t]').forEach(el => el.textContent = t(el.dataset.t));
+  document.querySelectorAll('[data-tp]').forEach(el => el.placeholder = t(el.dataset.tp));
+  document.querySelectorAll('[data-ta]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.ta)); el.title = t(el.dataset.ta); });
+  document.querySelectorAll('[data-lang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
+  $('foot-src').innerHTML = t('footSrc'); $('foot-min').innerHTML = t('footMin'); $('foot-note').textContent = t('footNote');
+  $('foot-count').textContent = t('footCount', num(R.length), num(S.length));
+  cFrom.set(); cTo.set(); render(); renderList(); renderRoute();
+}
+document.querySelectorAll('[data-lang]').forEach(b => b.addEventListener('click', () => { lang = b.dataset.lang; save(); applyLang(); }));
+
 // ---------- views ----------
 function route(){
   const h = (location.hash || '').replace('#', '');
   const isRoute = h in byHash, isList = h === 'routes';
   $('view-khoj').hidden = isRoute || isList; $('view-routes').hidden = !isList; $('view-route').hidden = !isRoute;
-  $('tab-khoj').toggleAttribute('aria-current', !(isRoute || isList)); $('tab-routes').toggleAttribute('aria-current', isRoute || isList);
-  if(!(isRoute || isList)) $('tab-khoj').setAttribute('aria-current', 'page'); else $('tab-routes').setAttribute('aria-current', 'page');
+  $('tab-khoj').removeAttribute('aria-current'); $('tab-routes').removeAttribute('aria-current');
+  (isRoute || isList ? $('tab-routes') : $('tab-khoj')).setAttribute('aria-current', 'page');
   if(isList) renderList();
   if(isRoute){
     const ri = byHash[h];
@@ -530,8 +707,7 @@ function route(){
 }
 window.addEventListener('hashchange', route);
 
-load(); cFrom.set(); cTo.set(); syncWho(); render(); route();
-$('foot-count').textContent = `এই অ্যাপে ${bn(R.length)}টি রুটের চার্ট ও ${bn(S.length)}টি স্টপেজ আছে। বাস দুই দিকেই চলে ধরে ভাড়া দেখানো হয়েছে।`;
+load(); syncWho(); applyLang(); route();
 })();
 </script>
 </body>

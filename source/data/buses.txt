@@ -1,0 +1,4 @@
+# Bus (company) names running on each route. The fare charts do not print these, so they are added here by hand.
+# Format: route number | Bangla names, comma separated | English names, comma separated
+# Example:  এ-৩৫৬ | ভিআইপি ২৭ | VIP 27
+# Leave a route out if its buses are not known yet.
