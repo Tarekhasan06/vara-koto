@@ -70,7 +70,7 @@ def check(r):
 
 def load():
     d = os.path.dirname(os.path.abspath(__file__))
-    return parse(sorted(glob.glob(os.path.join(d, 'data', 'b*.txt'))))
+    return parse(sorted(glob.glob(os.path.join(d, 'data', 'b[0-9][0-9].txt'))))
 
 if __name__ == '__main__':
     only = set(int(x) for x in sys.argv[1:])
