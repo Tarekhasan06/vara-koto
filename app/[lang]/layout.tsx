@@ -44,22 +44,21 @@ export default async function RootLayout({ children, params }: { children: React
               <span>{t.tagline}</span>
             </a>
             <div className="nav">
-              <Suspense fallback={<span className="langs" />}>
+              <NavTabs lang={lang} search={t.tabSearch} routes={t.tabRoutes} />
+              <Suspense fallback={<span className="lang" />}>
                 <LangSwitch lang={lang} />
               </Suspense>
-              <NavTabs lang={lang} search={t.tabSearch} routes={t.tabRoutes} />
             </div>
           </header>
           <main>{children}</main>
           <footer className="foot">
-            <p>{t.footSource}</p>
-            <p><strong>{t.footMin}</strong></p>
-            <p>{t.footNote}</p>
-            <p>
-              <a href="/api/routes">API</a>
-              {' '}
-              <a href="https://github.com/Tarekhasan06/vara-koto">GitHub</a>
-            </p>
+            <details className="rules">
+              <summary>{t.rulesTitle}</summary>
+              <p>{t.footMin}</p>
+              <p>{t.footNote}</p>
+            </details>
+            <p className="src">{t.footSource}</p>
+            <p className="links"><a href="/api/routes">API</a><a href="https://github.com/Tarekhasan06/vara-koto">GitHub</a></p>
           </footer>
         </div>
       </body>

@@ -19,7 +19,7 @@ export default async function RoutesPage({ params }: { params: Promise<{ lang: L
       ...[...r.at.keys()].flatMap((s) => [db.stops[s], db.en[s]])].join('|')),
   }));
   return (
-    <section>
+    <section className="narrow">
       <h2>{t.routesTitle}</h2>
       <p className="sub">{t.routesText(items.length, db.stops.length)}</p>
       <RouteList lang={lang} items={items} />

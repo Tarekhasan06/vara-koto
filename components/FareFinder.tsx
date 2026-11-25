@@ -56,15 +56,15 @@ export function FareFinder({ lang, stops, routes, through }: {
   } else if (from === to) {
     body = <div className="note" style={{ marginTop: 22 }}>{t.same}</div>;
   } else if (state.key !== key || (!state.data && !state.error)) {
-    body = <p className="loading" role="status">{t.loading}</p>;
+    body = <div role="status" aria-label={t.loading}><div className="sk sk-h" /><div className="sk sk-line" /><div className="stack">{[0, 1].map((k) => <div className="sk sk-ticket" key={k} />)}</div></div>;
   } else if (state.error) {
-    body = <div className="note" style={{ marginTop: 22 }}>{t.loadError} <button className="more" onClick={() => setRetry((n) => n + 1)}>{t.retry}</button></div>;
+    body = <div className="note err"><p>{t.loadError}</p><button className="more" onClick={() => setRetry((n) => n + 1)}>{t.retry}</button></div>;
   } else {
     body = <Results data={state.data!} lang={lang} student={student} stops={stops} showChanges={showChanges} onShowChanges={() => setShowChanges(true)} />;
   }
 
   return (
-    <section>
+    <section className="finder">
       <form className="board" onSubmit={(e) => e.preventDefault()} autoComplete="off">
         <div className="fields">
           <StopPicker lang={lang} label={t.from} value={from} stops={stops} find={find} onChange={(v) => setStops(v, to)} />
@@ -80,9 +80,8 @@ export function FareFinder({ lang, stops, routes, through }: {
             <button type="button" aria-pressed={student} onClick={() => setStudent(true)}>{t.student}</button>
           </div>
         </div>
-        <div className="minline">{t.minLine}</div>
       </form>
-      <div aria-live="polite">{body}</div>
+      <div className="results" aria-live="polite">{body}</div>
     </section>
   );
 }

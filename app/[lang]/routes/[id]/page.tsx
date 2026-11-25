@@ -29,7 +29,7 @@ export default async function RoutePage({ params }: P) {
   const stops = r.s.map((sid, i) => ({ id: sid, name: lang === 'en' ? db.en[sid] : db.stops[sid], printed: lang === 'en' ? db.en[sid] : r.raw[i], km: r.km[i], kmn: r.kmn[i] }));
   const passes = r.x.map(([sid]) => (lang === 'en' ? db.en[sid] : db.stops[sid]));
   return (
-    <section>
+    <section className="narrow">
       <Link className="back" href={`/${lang}/routes`}>{t.back}</Link>
       <h1 style={{ fontSize: 30, margin: '10px 0 4px' }}>
         <span className="rno" style={{ fontSize: 22, verticalAlign: 'middle' }}>{routeNo(lang, s)}</span> {routeName(lang, s)}

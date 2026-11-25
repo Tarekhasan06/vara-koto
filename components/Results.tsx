@@ -17,7 +17,7 @@ function PriceBox({ j, c, best }: { j: Journey; c: Ctx; best: boolean }) {
       <span className="cap">{t.youPay}</span>
       <span className={`amt${ranged ? ' range' : ''}`}>{amount(c.lang, q)}<small>{t.taka}</small></span>
       {j.legs.some((l) => !l.exact) && <span className="fine">{t.rangeNote}</span>}
-      {q.orig < q.pay && <><span className="orig">{t.actual(money(c.lang, q.orig))}</span><span className="fine">{t.minShort}</span></>}
+      {q.orig < q.pay && <span className="minbox"><span>{t.actual(money(c.lang, q.orig))}</span><span>{t.minShort}</span></span>}
       <span className="fine">{c.student ? t.fullFare(amount(c.lang, other)) : t.studentFare(amount(c.lang, other))}</span>
     </div>
   );
@@ -32,7 +32,7 @@ function LegView({ l, c, showFare }: { l: Leg; c: Ctx; showFare: boolean }) {
       <div className="head"><span className="rno">{routeNo(c.lang, r)}</span><span className="rname">{routeName(c.lang, r)}</span></div>
       {buses.length > 0 && <div className="busline">{t.buses}: <b>{buses.join(', ')}</b></div>}
       <div className="facts">
-        <span>{t.fromTo(nm(l.from), nm(l.to))}</span>
+        {showFare && <span>{t.fromTo(nm(l.from), nm(l.to))}</span>}
         <span>{l.exact ? kmL(c.lang, l.km) : `${t.about} ${kmL(c.lang, l.km, true)}`} {t.km}</span>
         <span>{t.stopsBetween(l.path.length - 2)}</span>
         {showFare && <span>{t.legFare(amount(c.lang, q), q.orig < q.pay ? money(c.lang, q.orig) : undefined)}</span>}
