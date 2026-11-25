@@ -1,3 +1,10 @@
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.vercel
+.env*.local
 source/dist/
 source/data.json
 __pycache__/

@@ -2,7 +2,7 @@
 
 ঢাকার বাসের সরকারি ভাড়ার চার্ট থেকে সঠিক ভাড়া জানার ওয়েব অ্যাপ। পুরো ইন্টারফেস বাংলায়।
 
-**অ্যাপ খুলুন:** https://tarekhasan06.github.io/vara-koto/
+**অ্যাপ খুলুন:** https://tarekhasan06.github.io/vara-koto/ (পুরোনো সংস্করণ; Vercel-এ নতুনটি চালু করার নিয়ম নিচে)
 
 ## কী করা যায়
 
@@ -26,9 +26,36 @@
 
 ঢাকা মেট্রো যাত্রী ও পণ্য পরিবহন কমিটির ডিজেলচালিত বাস ভাড়ার চার্ট (প্রজ্ঞাপন: ০৭ আশ্বিন ১৪৩৩ / ২২ সেপ্টেম্বর ২০২৬), প্রতি কিলোমিটার ২.৭০ টাকা। চার্টের ছবি থেকে প্রতিটি ঘর পড়ে `source/data/` ফোল্ডারে লেখা হয়েছে এবং `verify.py` দিয়ে কিলোমিটারের হিসাবের সাথে মিলিয়ে দেখা হয়েছে।
 
+## Run and deploy (Next.js)
+
+This is a Next.js 16 app (App Router, TypeScript). Pages are prerendered; fares come from API routes.
+
+```
+npm install
+npm run dev        # http://localhost:3000
+npm run build && npm start
+```
+
+**Deploy on Vercel:** go to vercel.com/new, import `Tarekhasan06/vara-koto`, keep the detected Next.js settings, click Deploy. No environment variables are needed.
+
+### API
+
+| Endpoint | Returns |
+| --- | --- |
+| `GET /api/stops?q=farmgate&lang=en` | stops matching a name (Bangla or English); without `q`, all stops |
+| `GET /api/fare?from=95&to=79` | direct routes and one-change journeys with general and student fares |
+| `GET /api/routes` | every route with number, end points, bus names, length |
+| `GET /api/routes/354` | full fare chart of one route |
+
+### Project layout
+
+- `app/[lang]/` – pages in Bangla (`/bn`) and English (`/en`); `app/api/` – the backend
+- `lib/fare.ts` – fare rules (chart fare, student half, 10 Tk minimum, unlisted stops); `lib/i18n.ts` – all text
+- `data/fares.json` – fare data, built by `source/build_data.py` from the chart transcriptions in `source/data/`
+
 ## English
 
-A web app for looking up Dhaka bus fares from the official fare charts, in Bangla and English: direct routes, one-change journeys, student half fare, and a 10 taka minimum fare for everyone. It is a single static page (`index.html`) with no server.
+A web app for looking up Dhaka bus fares from the official fare charts, in Bangla and English: direct routes, one-change journeys, student half fare, and a 10 taka minimum fare for everyone. 
 
 Files under `source/`:
 
@@ -43,5 +70,5 @@ To rebuild after editing the data:
 cd source
 python3 verify.py
 python3 build_data.py
-python3 build.py        # writes source/dist/index.html; copy it to the repository root
+cp data.json ../data/fares.json
 ```
